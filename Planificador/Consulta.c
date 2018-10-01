@@ -24,7 +24,7 @@ int main()
 	}
 
 	/* enviar consulta SQL */
-	if (mysql_query(conn, "SELECT count(*)  FROM estacion;"))
+	if (mysql_query(conn, "SELECT count(*)  FROM estacion WHERE id_estacion > 50"))
 	{ /* definicion de la consulta y el origen de la conexion */
 		fprintf(stderr, "%s\n", mysql_error(conn));
 		exit(1);
@@ -50,7 +50,7 @@ int main()
 	mysql_free_result(res);
 
 	/* enviar consulta SQL */
-	if (mysql_query(conn, "SELECT * FROM ruta_estacion;"))
+	if (mysql_query(conn, "SELECT * FROM ruta_estacion WHERE id_ruta >= 9;"))
 	{ /* definicion de la consulta y el origen de la conexion */
 		fprintf(stderr, "%s\n", mysql_error(conn));
 		exit(1);
@@ -59,8 +59,8 @@ int main()
 	res = mysql_use_result(conn);
 
 	while ((row = mysql_fetch_row(res)) != NULL){ /* recorrer la variable res con todos los registros obtenidos para su uso */
-		char estacionOrigen = atoi(row[1]);
-		char estacionDestino = atoi(row[2]);
+		char estacionOrigen = atoi(row[1]) - 50;
+		char estacionDestino = atoi(row[2]) -50;
 
 		if(estacionDestino > 0)
 			nodoEstaciones[estacionOrigen][estacionDestino] = 1;
@@ -74,10 +74,10 @@ int main()
 	/* se libera la variable res y se cierra la conexión */
 	mysql_free_result(res);
 	mysql_close(conn);
-
+	
 	//puts("NODO DE ESTACIONES");
 
-	printf("strict graph rutas\n{\nI [penwidth=0];\nI [label=\"\"];\n");
+	/*printf("strict graph rutas\n{\nI [penwidth=0];\nI [label=\"\"];\n");
 	for(i = 1; i < numEstaciones; i++){
 		printf("%d [shape=circle];\n", i);
 	}
@@ -90,5 +90,26 @@ int main()
 		}
 	}
 
-	puts("}");
+	puts("}");*/
+
+	srand(time(NULL));
+
+	printf("numEstaciones = %d\n", numEstaciones);
+
+	int eOrigenUs = rand() % (numEstaciones);
+	int eDestinoUs = 0;
+	//Validación debido a que una ruta no tiene transbordes
+	if(eOrigenUs >= 52 && eOrigenUs <= 68)
+		do
+		{
+			eDestinoUs = rand() % 17 + 52;
+		} while (eOrigenUs == eDestinoUs && eDestinoUs != 0);
+	else{
+		do
+		{
+			eDestinoUs = rand() % 52;
+		} while (eOrigenUs == eDestinoUs && eDestinoUs != 0);
+	}
+
+	printf("El usuario quiere viajar de la estación %d a la estación %d\n", eOrigenUs, eDestinoUs);
 }
