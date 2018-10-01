@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+ <definitions 
+ xmlns="http://schemas.xmlsoap.org/wsdl/" 
+ xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="bdActions" targetNamespace="http://metodos/" xmlns:tns="http://metodos/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:fi="http://java.sun.com/xml/ns/wsit/2006/09/policy/fastinfoset/service" xmlns:tcp="http://java.sun.com/xml/ns/wsit/2006/09/policy/soaptcp/service" xmlns:wsat="http://schemas.xmlsoap.org/ws/2004/10/wsat" 
+ >
+    <message name="hello"/>
+    <message name="helloResponse"/>
+    <message name="insTarifa"/>
+    <message name="insTarifaResponse"/>
+    <message name="insRuta"/>
+    <message name="insRutaResponse"/>
+    <message name="insRutaEstacion"/>
+    <message name="insRutaEstacionResponse"/>
+    <message name="insEstacion"/>
+    <message name="insEstacionResponse"/>
+    <message name="insFormaCobro"/>
+    <message name="insFormaCobroResponse"/>
+    <message name="insRutaTarifa"/>
+    <message name="insRutaTarifaResponse"/>
+    <message name="insHorario"/>
+    <message name="insHorarioResponse"/>
+    <message name="insRutaHorario"/>
+    <message name="insRutaHorarioResponse"/>
+    <message name="insUnidad"/>
+    <message name="insUnidadResponse"/>
+    <message name="insMantenimiento"/>
+    <message name="insMantenimientoResponse"/>
+    <message name="insRegistro"/>
+    <message name="insRegistroResponse"/>
+    <message name="insViajeUsuEst"/>
+    <message name="insViajeUsuEstResponse"/>
+    <message name="insViajeUnidad"/>
+    <message name="insViajeUnidadResponse"/>
+    <message name="insConductor"/>
+    <message name="insConductorResponse"/>
+    <message name="insViajeUsuario"/>
+    <message name="insViajeUsuarioResponse"/>
+    <message name="insUsuario"/>
+    <message name="insUsuarioResponse"/>
+    <message name="insComentario"/>
+    <message name="insComentarioResponse"/>
+    <message name="insAviso"/>
+    <message name="insAvisoResponse"/>
+    <message name="altTarifa"/>
+    <message name="altTarifaResponse"/>
+    <message name="altRuta"/>
+    <message name="altRutaResponse"/>
+    <message name="altRutaEstacion"/>
+    <message name="altRutaEstacionResponse"/>
+    <message name="altEstacion"/>
+    <message name="altEstacionResponse"/>
+    <message name="altFormaCobro"/>
+    <message name="altFormaCobroResponse"/>
+    <message name="altRutaTarifa"/>
+    <message name="altRutaTarifaResponse"/>
+    <message name="altHorario"/>
+    <message name="altHorarioResponse"/>
+    <message name="altRutaHorario"/>
+    <message name="altRutaHorarioResponse"/>
+    <message name="altUnidad"/>
+    <message name="altUnidadResponse"/>
+    <message name="altMantenimiento"/>
+    <message name="altMantenimientoResponse"/>
+    <message name="altRegistro"/>
+    <message name="altRegistroResponse"/>
+    <message name="altViajeUsuEst"/>
+    <message name="altViajeUsuEstResponse"/>
+    <message name="altViajeUnidad"/>
+    <message name="altViajeUnidadResponse"/>
+    <message name="altConductor"/>
+    <message name="altConductorResponse"/>
+    <message name="altViajeUsuario"/>
+    <message name="altViajeUsuarioResponse"/>
+    <message name="altUsuario"/>
+    <message name="altUsuarioResponse"/>
+    <message name="altComentario"/>
+    <message name="altComentarioResponse"/>
+    <message name="altAviso"/>
+    <message name="altAvisoResponse"/>
+    <message name="delTarifa"/>
+    <message name="delTarifaResponse"/>
+    <message name="delRuta"/>
+    <message name="delRutaResponse"/>
+    <message name="delRutaEstacion"/>
+    <message name="delRutaEstacionResponse"/>
+    <message name="delEstacion"/>
+    <message name="delEstacionResponse"/>
+    <message name="delFormaCobro"/>
+    <message name="delFormaCobroResponse"/>
+    <message name="delRutaTarifa"/>
+    <message name="delRutaTarifaResponse"/>
+    <message name="delHorario"/>
+    <message name="delHorarioResponse"/>
+    <message name="delRutaHorario"/>
+    <message name="delRutaHorarioResponse"/>
+    <message name="delUnidad"/>
+    <message name="delUnidadResponse"/>
+    <message name="delMantenimiento"/>
+    <message name="delMantenimientoResponse"/>
+    <message name="delRegistro"/>
+    <message name="delRegistroResponse"/>
+    <message name="delViajeUsuEst"/>
+    <message name="delViajeUsuEstResponse"/>
+    <message name="delViajeUnidad"/>
+    <message name="delViajeUnidadResponse"/>
+    <message name="delConductor"/>
+    <message name="delConductorResponse"/>
+    <message name="delViajeUsuario"/>
+    <message name="delViajeUsuarioResponse"/>
+    <message name="delUsuario"/>
+    <message name="delUsuarioResponse"/>
+    <message name="delComentario"/>
+    <message name="delComentarioResponse"/>
+    <message name="delAviso"/>
+    <message name="delAvisoResponse"/>
+    <portType name="bdActions">
+        <operation name="hello">
+            <input message="tns:hello"/>
+            <output message="tns:helloResponse"/>
+        </operation>
+        <operation name="insTarifa">
+            <input message="tns:insTarifa"/>
+            <output message="tns:insTarifaResponse"/>
+        </operation>
+        <operation name="insRuta">
+            <input message="tns:insRuta"/>
+            <output message="tns:insRutaResponse"/>
+        </operation>
+        <operation name="insRutaEstacion">
+            <input message="tns:insRutaEstacion"/>
+            <output message="tns:insRutaEstacionResponse"/>
+        </operation>
+        <operation name="insEstacion">
+            <input message="tns:insEstacion"/>
+            <output message="tns:insEstacionResponse"/>
+        </operation>
+        <operation name="insFormaCobro">
+            <input message="tns:insFormaCobro"/>
+            <output message="tns:insFormaCobroResponse"/>
+        </operation>
+        <operation name="insRutaTarifa">
+            <input message="tns:insRutaTarifa"/>
+            <output message="tns:insRutaTarifaResponse"/>
+        </operation>
+        <operation name="insHorario">
+            <input message="tns:insHorario"/>
+            <output message="tns:insHorarioResponse"/>
+        </operation>
+        <operation name="insRutaHorario">
+            <input message="tns:insRutaHorario"/>
+            <output message="tns:insRutaHorarioResponse"/>
+        </operation>
+        <operation name="insUnidad">
+            <input message="tns:insUnidad"/>
+            <output message="tns:insUnidadResponse"/>
+        </operation>
+        <operation name="insMantenimiento">
+            <input message="tns:insMantenimiento"/>
+            <output message="tns:insMantenimientoResponse"/>
+        </operation>
+        <operation name="insRegistro">
+            <input message="tns:insRegistro"/>
+            <output message="tns:insRegistroResponse"/>
+        </operation>
+        <operation name="insViajeUsuEst">
+            <input message="tns:insViajeUsuEst"/>
+            <output message="tns:insViajeUsuEstResponse"/>
+        </operation>
+        <operation name="insViajeUnidad">
+            <input message="tns:insViajeUnidad"/>
+            <output message="tns:insViajeUnidadResponse"/>
+        </operation>
+        <operation name="insConductor">
+            <input message="tns:insConductor"/>
+            <output message="tns:insConductorResponse"/>
+        </operation>
+        <operation name="insViajeUsuario">
+            <input message="tns:insViajeUsuario"/>
+            <output message="tns:insViajeUsuarioResponse"/>
+        </operation>
+        <operation name="insUsuario">
+            <input message="tns:insUsuario"/>
+            <output message="tns:insUsuarioResponse"/>
+        </operation>
+        <operation name="insComentario">
+            <input message="tns:insComentario"/>
+            <output message="tns:insComentarioResponse"/>
+        </operation>
+        <operation name="insAviso">
+            <input message="tns:insAviso"/>
+            <output message="tns:insAvisoResponse"/>
+        </operation>
+        <operation name="altTarifa">
+            <input message="tns:altTarifa"/>
+            <output message="tns:altTarifaResponse"/>
+        </operation>
+        <operation name="altRuta">
+            <input message="tns:altRuta"/>
+            <output message="tns:altRutaResponse"/>
+        </operation>
+        <operation name="altRutaEstacion">
+            <input message="tns:altRutaEstacion"/>
+            <output message="tns:altRutaEstacionResponse"/>
+        </operation>
+        <operation name="altEstacion">
+            <input message="tns:altEstacion"/>
+            <output message="tns:altEstacionResponse"/>
+        </operation>
+        <operation name="altFormaCobro">
+            <input message="tns:altFormaCobro"/>
+            <output message="tns:altFormaCobroResponse"/>
+        </operation>
+        <operation name="altRutaTarifa">
+            <input message="tns:altRutaTarifa"/>
+            <output message="tns:altRutaTarifaResponse"/>
+        </operation>
+        <operation name="altHorario">
+            <input message="tns:altHorario"/>
+            <output message="tns:altHorarioResponse"/>
+        </operation>
+        <operation name="altRutaHorario">
+            <input message="tns:altRutaHorario"/>
+            <output message="tns:altRutaHorarioResponse"/>
+        </operation>
+        <operation name="altUnidad">
+            <input message="tns:altUnidad"/>
+            <output message="tns:altUnidadResponse"/>
+        </operation>
+        <operation name="altMantenimiento">
+            <input message="tns:altMantenimiento"/>
+            <output message="tns:altMantenimientoResponse"/>
+        </operation>
+        <operation name="altRegistro">
+            <input message="tns:altRegistro"/>
+            <output message="tns:altRegistroResponse"/>
+        </operation>
+        <operation name="altViajeUsuEst">
+            <input message="tns:altViajeUsuEst"/>
+            <output message="tns:altViajeUsuEstResponse"/>
+        </operation>
+        <operation name="altViajeUnidad">
+            <input message="tns:altViajeUnidad"/>
+            <output message="tns:altViajeUnidadResponse"/>
+        </operation>
+        <operation name="altConductor">
+            <input message="tns:altConductor"/>
+            <output message="tns:altConductorResponse"/>
+        </operation>
+        <operation name="altViajeUsuario">
+            <input message="tns:altViajeUsuario"/>
+            <output message="tns:altViajeUsuarioResponse"/>
+        </operation>
+        <operation name="altUsuario">
+            <input message="tns:altUsuario"/>
+            <output message="tns:altUsuarioResponse"/>
+        </operation>
+        <operation name="altComentario">
+            <input message="tns:altComentario"/>
+            <output message="tns:altComentarioResponse"/>
+        </operation>
+        <operation name="altAviso">
+            <input message="tns:altAviso"/>
+            <output message="tns:altAvisoResponse"/>
+        </operation>
+        <operation name="delTarifa">
+            <input message="tns:delTarifa"/>
+            <output message="tns:delTarifaResponse"/>
+        </operation>
+        <operation name="delRuta">
+            <input message="tns:delRuta"/>
+            <output message="tns:delRutaResponse"/>
+        </operation>
+        <operation name="delRutaEstacion">
+            <input message="tns:delRutaEstacion"/>
+            <output message="tns:delRutaEstacionResponse"/>
+        </operation>
+        <operation name="delEstacion">
+            <input message="tns:delEstacion"/>
+            <output message="tns:delEstacionResponse"/>
+        </operation>
+        <operation name="delFormaCobro">
+            <input message="tns:delFormaCobro"/>
+            <output message="tns:delFormaCobroResponse"/>
+        </operation>
+        <operation name="delRutaTarifa">
+            <input message="tns:delRutaTarifa"/>
+            <output message="tns:delRutaTarifaResponse"/>
+        </operation>
+        <operation name="delHorario">
+            <input message="tns:delHorario"/>
+            <output message="tns:delHorarioResponse"/>
+        </operation>
+        <operation name="delRutaHorario">
+            <input message="tns:delRutaHorario"/>
+            <output message="tns:delRutaHorarioResponse"/>
+        </operation>
+        <operation name="delUnidad">
+            <input message="tns:delUnidad"/>
+            <output message="tns:delUnidadResponse"/>
+        </operation>
+        <operation name="delMantenimiento">
+            <input message="tns:delMantenimiento"/>
+            <output message="tns:delMantenimientoResponse"/>
+        </operation>
+        <operation name="delRegistro">
+            <input message="tns:delRegistro"/>
+            <output message="tns:delRegistroResponse"/>
+        </operation>
+        <operation name="delViajeUsuEst">
+            <input message="tns:delViajeUsuEst"/>
+            <output message="tns:delViajeUsuEstResponse"/>
+        </operation>
+        <operation name="delViajeUnidad">
+            <input message="tns:delViajeUnidad"/>
+            <output message="tns:delViajeUnidadResponse"/>
+        </operation>
+        <operation name="delConductor">
+            <input message="tns:delConductor"/>
+            <output message="tns:delConductorResponse"/>
+        </operation>
+        <operation name="delViajeUsuario">
+            <input message="tns:delViajeUsuario"/>
+            <output message="tns:delViajeUsuarioResponse"/>
+        </operation>
+        <operation name="delUsuario">
+            <input message="tns:delUsuario"/>
+            <output message="tns:delUsuarioResponse"/>
+        </operation>
+        <operation name="delComentario">
+            <input message="tns:delComentario"/>
+            <output message="tns:delComentarioResponse"/>
+        </operation>
+        <operation name="delAviso">
+            <input message="tns:delAviso"/>
+            <output message="tns:delAvisoResponse"/>
+        </operation>
+    </portType>
+    <binding name="bdActionsPortBinding" type="tns:bdActions">
+        <wsp:PolicyReference URI="#bdActionsPortBindingPolicy"/>
+        <operation name="hello">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insTarifa">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insRuta">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insRutaEstacion">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insEstacion">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insFormaCobro">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insRutaTarifa">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insHorario">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insRutaHorario">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insUnidad">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insMantenimiento">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insRegistro">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insViajeUsuEst">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insViajeUnidad">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insConductor">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insViajeUsuario">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insUsuario">
+            <wsp:PolicyReference URI="#bdActionsPortBinding_insUsuario_Policy"/>
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insComentario">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="insAviso">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altTarifa">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altRuta">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altRutaEstacion">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altEstacion">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altFormaCobro">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altRutaTarifa">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altHorario">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altRutaHorario">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altUnidad">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altMantenimiento">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altRegistro">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altViajeUsuEst">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altViajeUnidad">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altConductor">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altViajeUsuario">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altUsuario">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altComentario">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="altAviso">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delTarifa">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delRuta">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delRutaEstacion">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delEstacion">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delFormaCobro">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delRutaTarifa">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delHorario">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delRutaHorario">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delUnidad">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delMantenimiento">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delRegistro">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delViajeUsuEst">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delViajeUnidad">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delConductor">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delViajeUsuario">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delUsuario">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delComentario">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="delAviso">
+            <input/>
+            <output/>
+        </operation>
+    </binding>
+    <service name="bdActions">
+        <port name="bdActionsPort" binding="tns:bdActionsPortBinding"/>
+    </service>
+    <wsp:Policy wsu:Id="bdActionsPortBindingPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All/>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    <wsp:Policy wsu:Id="bdActionsPortBinding_insUsuario_Policy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <wsat:ATAssertion wsp:Optional="true"/>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+</definitions>
