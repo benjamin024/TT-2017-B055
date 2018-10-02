@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 /**
  *
  * @author Luis R
@@ -1335,5 +1336,111 @@ public class bdActions {
     
    //ACABAN BAJAS
     
+   //Inicia querys genericos
+    
+    @WebMethod(operationName = "queryCons")  
+    public ArrayList queryCons(@WebParam(name = "campos") String campos,@WebParam(name = "condicion") String condicion,@WebParam(name = "tabla") String tabla)
+        {
+            ResultSet resC=null;
+            
+            String valores;
+            ArrayList<String> result = new ArrayList<String>();
+            ArrayList<String> columnName = new ArrayList<String>();
+            try{
+               
+                if(Conecta()==0)
+                    throw new Exception();
+             
+                if(condicion==null)
+                    resC=stmt.executeQuery("select "+campos+" from "+tabla);
+                else
+                    resC=stmt.executeQuery("select "+campos+" from "+tabla+" where "+condicion);
+                                    
+                
+                if(campos.equals("*"))
+                    {
+                        Statement st = null;
+                        Connection cn = null;
+                        Class.forName("com.mysql.jdbc.Driver").newInstance();
+                        cn = DriverManager.getConnection("jdbc:mysql://localhost/tt?user=root&password=n0m3l0&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+                        st = cn.createStatement();
+                        ResultSet cols = st.executeQuery("show columns from "+tabla);
+                        
+                        /*int count = metaData.getColumnCount(); //number of column
+                        String columnName[] = new String[count];*/
+                        
+                        while(cols.next())
+                            {
+                                columnName.add(cols.getString("Field"));
+                                
+                            }
+                        for (int i = 0; i < columnName.size(); i++)
+                                {
+                                   //columnName[i-1] = metaData.getColumnLabel(i);
+                                   System.out.println(columnName.get(i));
+                               }
+
+                        while(resC.next())
+                            {
+                                valores="";
+                                for(int i=0;i<columnName.size();i++)
+                                {
+                                    valores = valores+resC.getString(columnName.get(i));
+
+                                    if(i!=columnName.size()-1)
+                                        valores=valores+",";
+                                }
+                                result.add(valores);
+                            }
+                    }
+                else
+                    {
+                        String [] columnas = campos.split(",");
+
+                        while(resC.next())
+                            {
+                                valores="";
+                                for(int i=0;i<columnas.length;i++)
+                                {
+                                    valores = valores+resC.getString(columnas[i]);
+
+                                    if(i!=columnas.length-1)
+                                        valores=valores+",";
+                                }
+                                result.add(valores);
+                            }
+                    }
+                }
+         catch(Exception e){
+             System.out.println(e);
+             }
+
+            return result;
+        }
+    
+    @WebMethod(operationName = "queryIns")  
+    public int queryIns(@WebParam(name = "values") String values,@WebParam(name = "tabla") String tabla)
+        {
+     
+            try{
+               
+                if(Conecta()==0)
+                    throw new Exception();
+             
+                
+                resulIns=stmt.executeUpdate("insert into '"+tabla+"' values('"+values+"')");
+                if(resulIns>0){
+                    resM=1;
+                } else{
+                    throw new Exception();
+                }
+            }
+         catch(Exception e){
+             System.out.println(e);
+             resM=0;}
+
+            return resM;
+        }
+    //Fin querys genericos
     
 }
