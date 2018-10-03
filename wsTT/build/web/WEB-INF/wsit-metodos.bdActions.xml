@@ -115,6 +115,10 @@
     <message name="delComentarioResponse"/>
     <message name="delAviso"/>
     <message name="delAvisoResponse"/>
+    <message name="queryCons"/>
+    <message name="queryConsResponse"/>
+    <message name="queryIns"/>
+    <message name="queryInsResponse"/>
     <portType name="bdActions">
         <operation name="hello">
             <input message="tns:hello"/>
@@ -335,6 +339,14 @@
         <operation name="delAviso">
             <input message="tns:delAviso"/>
             <output message="tns:delAvisoResponse"/>
+        </operation>
+        <operation name="queryCons">
+            <input message="tns:queryCons"/>
+            <output message="tns:queryConsResponse"/>
+        </operation>
+        <operation name="queryIns">
+            <input message="tns:queryIns"/>
+            <output message="tns:queryInsResponse"/>
         </operation>
     </portType>
     <binding name="bdActionsPortBinding" type="tns:bdActions">
@@ -557,6 +569,14 @@
             <output/>
         </operation>
         <operation name="delAviso">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="queryCons">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="queryIns">
             <input/>
             <output/>
         </operation>

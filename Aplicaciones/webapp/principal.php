@@ -11,6 +11,20 @@
     <div class="container-fluid">
         <div class="row">
             <?php include("menu-lat.html"); ?>
+            <div class="col-md-10">
+                <?php
+                    ini_set('soap.wsdl_cache_enabled', 0);
+                    ini_set('soap.wsdl_cache_ttl', 900);
+                    ini_set('default_socket_timeout', 15);
+
+                    $servicio="http://localhost:8080/wsTT/bdActions?wsdl"; //url del servicio
+                    $parametros=array(); //parametros de la llamada
+                    $client = new SoapClient($servicio, $parametros);
+                    $result = $client->conecta($parametros);//llamamos al métdo que nos interesa con los parámetros
+                    $result = (array) $result;
+                    print_r($result["return"]);
+                ?>
+            </div>
         </div>
     </div>
     <script src="js/jquery-3.3.1.min.js"></script>

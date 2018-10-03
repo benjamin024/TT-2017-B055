@@ -63,7 +63,7 @@ public class bdActions {
             //
           //  Class.forName("com.mysql.jdbc.Driver");
            // conn=DriverManager.getConnection(url,usr,pass);
-            //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tt?user=root&password=n0m3l0");
+            //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tt?user=root&password=b3nj4m1n");
             
             if(Conecta()==0)
                     throw new Exception();
@@ -495,7 +495,7 @@ public class bdActions {
             //
           //  Class.forName("com.mysql.jdbc.Driver");
            // conn=DriverManager.getConnection(url,usr,pass);
-            //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tt?user=root&password=n0m3l0");
+            //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tt?user=root&password=b3nj4m1n");
             
             if(Conecta()==0)
                     throw new Exception();
@@ -924,7 +924,7 @@ public class bdActions {
             //
           //  Class.forName("com.mysql.jdbc.Driver");
            // conn=DriverManager.getConnection(url,usr,pass);
-            //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tt?user=root&password=n0m3l0");
+            //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tt?user=root&password=b3nj4m1n");
             
             if(Conecta()==0)
                     throw new Exception();
@@ -1362,7 +1362,7 @@ public class bdActions {
                         Statement st = null;
                         Connection cn = null;
                         Class.forName("com.mysql.jdbc.Driver").newInstance();
-                        cn = DriverManager.getConnection("jdbc:mysql://localhost/tt?user=root&password=n0m3l0&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+                        cn = DriverManager.getConnection("jdbc:mysql://localhost/tt?user=root&password=b3nj4m1n&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
                         st = cn.createStatement();
                         ResultSet cols = st.executeQuery("show columns from "+tabla);
                         
