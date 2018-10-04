@@ -71,6 +71,7 @@ public class bdActions {
           //  Class.forName("com.mysql.jdbc.Driver");
            // conn=DriverManager.getConnection(url,usr,pass);
             //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tt?user=root&password=n0m3l0");
+            //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tt?user=root&password=b3nj4m1n");
             
             if(Conecta()==0)
                     throw new Exception();
@@ -503,6 +504,7 @@ public class bdActions {
           //  Class.forName("com.mysql.jdbc.Driver");
            // conn=DriverManager.getConnection(url,usr,pass);
             //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tt?user=root&password=n0m3l0");
+            //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tt?user=root&password=b3nj4m1n");
             
             if(Conecta()==0)
                     throw new Exception();
@@ -932,6 +934,7 @@ public class bdActions {
           //  Class.forName("com.mysql.jdbc.Driver");
            // conn=DriverManager.getConnection(url,usr,pass);
             //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tt?user=root&password=n0m3l0");
+            //conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tt?user=root&password=b3nj4m1n");
             
             if(Conecta()==0)
                     throw new Exception();
