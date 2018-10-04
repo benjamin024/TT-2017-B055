@@ -12,10 +12,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 /**
  *
  * @author Luis R
@@ -1336,16 +1343,18 @@ public class bdActions {
     
    //ACABAN BAJAS
     
-   //Inicia querys genericos
-    
+    //Inicia querys genericos
+
     @WebMethod(operationName = "queryCons")  
-    public ArrayList queryCons(@WebParam(name = "campos") String campos,@WebParam(name = "condicion") String condicion,@WebParam(name = "tabla") String tabla)
+    public List queryCons(@WebParam(name = "campos") String campos,@WebParam(name = "condicion") String condicion,@WebParam(name = "tabla") String tabla) 
         {
             ResultSet resC=null;
             
             String valores;
             ArrayList<String> result = new ArrayList<String>();
             ArrayList<String> columnName = new ArrayList<String>();
+            ArrayList results = new ArrayList();
+            List<String> strings = new ArrayList<String>();
             try{
                
                 if(Conecta()==0)
@@ -1355,67 +1364,37 @@ public class bdActions {
                     resC=stmt.executeQuery("select "+campos+" from "+tabla);
                 else
                     resC=stmt.executeQuery("select "+campos+" from "+tabla+" where "+condicion);
-                                    
                 
-                if(campos.equals("*"))
-                    {
-                        Statement st = null;
-                        Connection cn = null;
-                        Class.forName("com.mysql.jdbc.Driver").newInstance();
-                        cn = DriverManager.getConnection("jdbc:mysql://localhost/tt?user=root&password=n0m3l0&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
-                        st = cn.createStatement();
-                        ResultSet cols = st.executeQuery("show columns from "+tabla);
-                        
-                        /*int count = metaData.getColumnCount(); //number of column
-                        String columnName[] = new String[count];*/
-                        
-                        while(cols.next())
-                            {
-                                columnName.add(cols.getString("Field"));
-                                
-                            }
-                        for (int i = 0; i < columnName.size(); i++)
-                                {
-                                   //columnName[i-1] = metaData.getColumnLabel(i);
-                                   System.out.println(columnName.get(i));
-                               }
+                //Resulset
+                
+                ResultSetMetaData md = resC.getMetaData();
+                int columns = md.getColumnCount();
+                
 
-                        while(resC.next())
-                            {
-                                valores="";
-                                for(int i=0;i<columnName.size();i++)
-                                {
-                                    valores = valores+resC.getString(columnName.get(i));
+                while (resC.next()) {
+                    HashMap row = new HashMap();
+                    results.add(row);
 
-                                    if(i!=columnName.size()-1)
-                                        valores=valores+",";
-                                }
-                                result.add(valores);
-                            }
+                    for(int i=1; i<=columns; i++){
+                      row.put(md.getColumnName(i),resC.getObject(i));
                     }
-                else
-                    {
-                        String [] columnas = campos.split(",");
-
-                        while(resC.next())
-                            {
-                                valores="";
-                                for(int i=0;i<columnas.length;i++)
-                                {
-                                    valores = valores+resC.getString(columnas[i]);
-
-                                    if(i!=columnas.length-1)
-                                        valores=valores+",";
-                                }
-                                result.add(valores);
-                            }
+                }
+                
+                for(int i=0;i<results.size();i++)
+                    System.out.println("Es: "+results.get(i));
+                
+                 
+                    for (Object object : results) {
+                        strings.add(object != null ? object.toString() : null);
                     }
+                //Fin resulset
+                
                 }
          catch(Exception e){
              System.out.println(e);
              }
 
-            return result;
+            return strings;
         }
     
     @WebMethod(operationName = "queryIns")  
