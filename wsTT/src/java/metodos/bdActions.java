@@ -5,6 +5,7 @@
  */
 package metodos;
 
+import com.google.gson.Gson;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -1346,15 +1347,13 @@ public class bdActions {
     //Inicia querys genericos
 
     @WebMethod(operationName = "queryCons")  
-    public List queryCons(@WebParam(name = "campos") String campos,@WebParam(name = "condicion") String condicion,@WebParam(name = "tabla") String tabla) 
+    public String queryCons(@WebParam(name = "campos") String campos,@WebParam(name = "condicion") String condicion,@WebParam(name = "tabla") String tabla) 
         {
             ResultSet resC=null;
             
-            String valores;
+            String json = "";
             ArrayList<String> result = new ArrayList<String>();
-            ArrayList<String> columnName = new ArrayList<String>();
             ArrayList results = new ArrayList();
-            List<String> strings = new ArrayList<String>();
             try{
                
                 if(Conecta()==0)
@@ -1372,29 +1371,23 @@ public class bdActions {
                 
 
                 while (resC.next()) {
-                    HashMap row = new HashMap();
-                    results.add(row);
-
                     for(int i=1; i<=columns; i++){
-                      row.put(md.getColumnName(i),resC.getObject(i));
+                      result.add("\""+md.getColumnName(i)+"\":\""+resC.getObject(i)+"\"");
                     }
+                    results.add("{"+String.join(",", result)+"}");
+                    result.clear();
                 }
                 
-                for(int i=0;i<results.size();i++)
-                    System.out.println("Es: "+results.get(i));
                 
-                 
-                    for (Object object : results) {
-                        strings.add(object != null ? object.toString() : null);
-                    }
-                //Fin resulset
+                json = new Gson().toJson(results);
                 
+                System.out.println(json);
                 }
          catch(Exception e){
              System.out.println(e);
              }
 
-            return strings;
+            return json;
         }
     
     @WebMethod(operationName = "queryIns")  

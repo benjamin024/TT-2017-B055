@@ -1,3 +1,7 @@
+<?php
+    include("webservices_cliente.php");
+    $rutas = selectWhere("id_ruta > 4", "*", "ruta");
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,13 +38,19 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="ruta">Ruta:</label>
-                                            <input type="number" class="form-control" id="ruta" name="ruta" placeholder="Ingresa la ruta" required>
+                                            <select class="form-control"  name="ruta" id="ruta" required>
+                                                <?php
+                                                    foreach($rutas as $r){
+                                                        echo "<option value='".$r["id_ruta"]."'>".$r["nombre"]."</option>";
+                                                    }
+                                                ?>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="capacidad">Capacidad:</label>
-                                            <input type="text" class="form-control" id="capacidad" name="capacidad" placeholder="Ingresa la capacidad" required>
+                                            <input type="number" class="form-control" id="capacidad" name="capacidad" placeholder="Ingresa la capacidad" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
