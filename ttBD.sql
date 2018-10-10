@@ -231,7 +231,8 @@ CREATE TABLE `ruta` (
   `id_ruta` int(4) DEFAULT NULL,
   `nombre` varchar(30) DEFAULT NULL,
   `combustible` float(6,3) DEFAULT NULL,
-  `id_forma_cobro` int(2) DEFAULT NULL
+  `id_forma_cobro` int(2) DEFAULT NULL,
+  `color` varchar(7) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -241,7 +242,7 @@ CREATE TABLE `ruta` (
 
 LOCK TABLES `ruta` WRITE;
 /*!40000 ALTER TABLE `ruta` DISABLE KEYS */;
-INSERT INTO `ruta` VALUES (1,'linea 5',30.200,1),(2,'linea 6',23.510,1),(3,'linea 7',49.030,1),(4,'linea 9',37.312,1),(9,'Ruta 9',32.120,2),(20,'Ruta 20',36.847,2),(33,'Ruta 33',28.147,2),(41,'Ruta 41',22.887,2);
+INSERT INTO `ruta` VALUES (1,'linea 5',30.200,1,'#fddf00'),(2,'linea 6',23.510,1,'#0064a8'),(3,'linea 7',49.030,1,'#ff6309'),(4,'linea 9',37.312,1,'#5b2c2a'),(9,'Ruta 9',32.120,2,'#00ff6b'),(20,'Ruta 20',36.847,2,'#f9ef3d'),(33,'Ruta 33',28.147,2,'#fa3535'),(41,'Ruta 41',22.887,2,'#003f5c');
 /*!40000 ALTER TABLE `ruta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -387,7 +388,7 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES ('l@gmail.com','Luis','lol',1,'3241'),('luisr@gmail.com','Luis A','lel',1,'4351');
+INSERT INTO `usuario` VALUES ('l@gmail.com','Luis','ol',1,'839');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -474,4 +475,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-30 22:43:58
+-- Dump completed on 2018-10-09 23:12:33
