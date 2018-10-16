@@ -46,7 +46,7 @@ public class bdActions {
         try
         {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/tt?user=root&password=b3nj4m1n&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/tt?user=root&password=n0m3l0&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
             stmt = conn.createStatement();
         }
         catch(Exception e)
@@ -82,6 +82,7 @@ public class bdActions {
              // aux=rs.getString("Nombre")+","+rs.getString("Apellido");
             if(resulIns>0){
                 resM=1;
+                conn.close();
             } else{
                 throw new Exception();
                 //low=false;
@@ -105,6 +106,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert into ruta values('"+idRuta+"','"+nombre+"','"+combustible+"','"+forCobro+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -127,6 +129,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert into ruta_estacion values('"+idRuta+"','"+idEstacion+"','"+sigEstacion+"','"+transbordo+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -149,6 +152,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert into estacion (nombre,latitud,longitud) values('"+nombre+"','"+latitud+"','"+longitud+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -172,6 +176,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert into forma_cobro(descripcion) values('"+descripcion+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -194,6 +199,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert into ruta_tarifa values('"+idRuta+"','"+idTarifa+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -222,6 +228,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert into horario (dias,hora_inicio,hora_termino,frecuencia) values('"+dias+"','"+timeValue+"','"+timeValue2+"','"+timeValue3+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -244,6 +251,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert into ruta_horario values('"+idRuta+"','"+idHorario+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -265,6 +273,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert into unidad values('"+idUnidad+"','"+capacidad+"','"+idRuta+"','"+iniOperaciones+"','"+responsable+"','"+finOperaciones+"','"+latitud+"','"+longitud+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -287,6 +296,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert into mantenimiento(id_unidad,fecha,responsable,comentarios,costo) values('"+idUnidad+"','"+fecha+"','"+responsable+"','"+comentarios+"','"+costo+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -309,6 +319,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert into registro(id_viaje_unidad,id_estacion,no_pasajeros,no_pasajeros_especial,fecha_hora) values('"+idViajeUnidad+"','"+idEstacion+"','"+noPasajeros+"','"+noPasajerosEspeciales+"','"+fechaHora+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -330,6 +341,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert into viaje_usuario_estacion values('"+idViajeUsuario+"','"+idEstacion+"','"+noEstacion+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -355,6 +367,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert into viaje_unidad(id_unidad,rfc_conductor,fecha,hora_salida,hora_termino) values('"+idUnidad+"','"+rfcConductor+"','"+fecha+"','"+timeValue+"','"+timeValue2+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -379,6 +392,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert conductor values('"+rfcConductor+"','"+nombre+"','"+sueldo+"','"+noLicencia+"','"+telefono+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -403,6 +417,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert viaje_usuario(fecha_hora,correo_usuario) values('"+fechaHora+"','"+correoUsuario+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -427,6 +442,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert usuario values('"+correoUsuario+"','"+nombre+"','"+password+"','"+tipo+"','"+noTarjeta+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -451,6 +467,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert comentario(correo_usuario,comentario,fecha) values('"+correoUsuario+"','"+comentario+"','"+fecha+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -475,6 +492,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert aviso(aviso,fecha_publicacion,fecha_termino) values('"+aviso+"','"+fechaPublicacion+"','"+fechaTermino+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -514,6 +532,7 @@ public class bdActions {
              // aux=rs.getString("Nombre")+","+rs.getString("Apellido");
             if(resulIns>0){
                 resM=1;
+                conn.close();
             } else{
                 throw new Exception();
                 //low=false;
@@ -537,6 +556,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update ruta set nombre='"+nombre+"',combustible='"+combustible+"',id_forma_cobro='"+forCobro+"' where id_ruta='"+idRuta+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -559,6 +579,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update ruta_estacion set id_estacion='"+idEstacion+"',sig_estacion='"+sigEstacion+"',transbordo='"+transbordo+"' where id_ruta='"+idRuta+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -581,6 +602,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update estacion set nombre='"+nombre+"',latitud='"+latitud+"',longitud='"+longitud+"' where id_estacion='"+idEstacion+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -604,6 +626,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update forma_cobro set descripcion='"+descripcion+"' where id_forma_cobro='"+idFormCobro+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -626,6 +649,7 @@ public class bdActions {
                  resulIns=stmt.executeUpdate("update ruta_tarifa set id_tarifa='"+idTarifa+"' where id_ruta='"+idRuta+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -654,6 +678,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update horario set dias='"+dias+"',hora_inicio='"+timeValue+"',hora_termino='"+timeValue2+"',frecuencia='"+timeValue3+"' where id_horario='"+idHorario+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -676,6 +701,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update ruta_horario set id_horario='"+idHorario+"' where id_ruta='"+idRuta+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -697,6 +723,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update unidad set capacidad='"+capacidad+"',id_ruta='"+idRuta+"',inicio_operaciones='"+iniOperaciones+"',responsable='"+responsable+"',fin_operaciones='"+finOperaciones+"',latitud='"+latitud+"',longitud='"+longitud+"' where id_unidad='"+idUnidad+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -719,6 +746,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update mantenimiento set id_unidad='"+idUnidad+"',fecha='"+fecha+"',responsable='"+responsable+"',comentarios='"+comentarios+"',costo='"+costo+"' where id_mantenimiento='"+idMantenimiento+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -741,6 +769,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update registro set id_viaje_unidad='"+idViajeUnidad+"',id_estacion='"+idEstacion+"',no_pasajeros='"+noPasajeros+"',no_pasajeros_especial='"+noPasajerosEspeciales+"',fecha_hora='"+fechaHora+"' where id_registro='"+idRegistro+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -762,6 +791,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update viaje_usuario_estacion set id_estacion='"+idEstacion+"',no_estacion='"+noEstacion+"' where id_viaje_usuario='"+idViajeUsuario+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -787,6 +817,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update viaje_unidad set id_unidad='"+idUnidad+"',rfc_conductor='"+rfcConductor+"',fecha='"+fecha+"',hora_salida='"+timeValue+"',hora_termino='"+timeValue2+"' where id_viaje_unidad='"+idViajeUnidad+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -811,6 +842,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update conductor set nombre='"+nombre+"',sueldo='"+sueldo+"',no_licencia='"+noLicencia+"',telefono='"+telefono+"' where rfc_conductor='"+rfcConductor+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -835,6 +867,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update viaje_usuario set fecha_hora='"+fechaHora+"',correo_usuario='"+correoUsuario+"' where id_viaje_usuario='"+idViajeUsuario+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -859,6 +892,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update usuario set nombre='"+nombre+"',password='"+password+"',tipo='"+tipo+"',no_tarjeta='"+noTarjeta+"' where correo_usuario='"+correoUsuario+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -883,6 +917,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update comentario set correo_usuario='"+correoUsuario+"',comentario='"+comentario+"',fecha='"+fecha+"' where id_comentario='"+idComentario+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -907,6 +942,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("update aviso set aviso='"+aviso+"',fecha_publicacion='"+fechaPublicacion+"',fecha_termino='"+fechaTermino+"' where id_aviso='"+idAviso+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -943,6 +979,7 @@ public class bdActions {
              // aux=rs.getString("Nombre")+","+rs.getString("Apellido");
             if(resulIns>0){
                 resM=1;
+                conn.close();
             } else{
                 throw new Exception();
                 //low=false;
@@ -966,6 +1003,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from ruta where id_ruta='"+idRuta+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -988,6 +1026,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from ruta_estacion where id_estacion='"+idEstacion+"' and id_ruta='"+idRuta+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1010,6 +1049,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from estacion where id_estacion='"+idEstacion+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1033,6 +1073,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from forma_cobro where id_forma_cobro='"+idFormCobro+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1055,6 +1096,7 @@ public class bdActions {
                  resulIns=stmt.executeUpdate("delete from ruta_tarifa where  id_ruta='"+idRuta+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1080,6 +1122,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from horario  where id_horario='"+idHorario+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1102,6 +1145,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from ruta_horario  where id_ruta='"+idRuta+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1123,6 +1167,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from unidad  where id_unidad like '"+idUnidad+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1145,6 +1190,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from mantenimiento  where id_mantenimiento='"+idMantenimiento+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1167,6 +1213,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from registro where id_registro='"+idRegistro+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1188,6 +1235,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from viaje_usuario_estacion where id_estacion='"+idEstacion+"' and id_viaje_usuario='"+idViajeUsuario+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1211,6 +1259,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from viaje_unidad  where id_viaje_unidad='"+idViajeUnidad+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1235,6 +1284,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from conductor  where rfc_conductor='"+rfcConductor+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1259,6 +1309,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from viaje_usuario where id_viaje_usuario='"+idViajeUsuario+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1283,6 +1334,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from usuario where correo_usuario like '"+correoUsuario+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1307,6 +1359,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from comentario  where id_comentario='"+idComentario+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1331,6 +1384,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("delete from aviso where id_aviso='"+idAviso+"'");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
@@ -1346,7 +1400,7 @@ public class bdActions {
     
     //Inicia querys genericos
 
-    @WebMethod(operationName = "queryCons")  
+    @WebMethod(operationName = "queryCons",action="http://metodos/queryCons")  
     public String queryCons(@WebParam(name = "campos") String campos,@WebParam(name = "condicion") String condicion,@WebParam(name = "tabla") String tabla) 
         {
             ResultSet resC=null;
@@ -1382,6 +1436,7 @@ public class bdActions {
                 json = new Gson().toJson(results);
                 
                 System.out.println(json);
+                conn.close();
                 }
          catch(Exception e){
              System.out.println(e);
@@ -1403,6 +1458,7 @@ public class bdActions {
                 resulIns=stmt.executeUpdate("insert into '"+tabla+"' values('"+values+"')");
                 if(resulIns>0){
                     resM=1;
+                    conn.close();
                 } else{
                     throw new Exception();
                 }
