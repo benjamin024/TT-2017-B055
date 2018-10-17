@@ -3,22 +3,22 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Avisos</title>
+    <title>Rutas</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css" />
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <?php
         include("webservices_cliente.php");
-        $avisos = selectWhere("1 = 1", "*", "aviso");
+        $rutas = selectWhere("id_ruta > 4", "*", "ruta");
 
         if(@$_GET["addOk"]){
             if(@$_GET["addOk"] == 1){
-                $tituloOk = "Aviso registrado correctamente";
-                $mensajeOk = "La información del aviso fue registrada de manera exitosa";
+                $tituloOk = "Ruta registrada correctamente";
+                $mensajeOk = "La información de la ruta fue registrada de manera exitosa";
             }else if(@$_GET["addOk"] == 2){
                 $tituloOk = "Ocurrió un error";
-                $mensajeOk = "No se pudo registrar la información del aviso, <a href='form_reg_aviso.php' style='color: #FFF;'>inténtalo nuevamente</a>";
+                $mensajeOk = "No se pudo registrar la información de la ruta, <a href='form_reg_ruta.php' style='color: #FFF;'>inténtalo nuevamente</a>";
             }
             $modal = "$('#modalOk').modal('toggle')";
             echo "<script>$(document).ready(function(){{$modal}});</script>";
@@ -26,10 +26,10 @@
         if(@$_GET["editOk"]){
             if(@$_GET["editOk"] == 1){
                 $tituloOk = "Información actualizada correctamente";
-                $mensajeOk = "La información del aviso fue actualizada de manera exitosa";
+                $mensajeOk = "La información de la ruta fue actualizada de manera exitosa";
             }else if(@$_GET["editOk"] == 2){
                 $tituloOk = "Ocurrió un error";
-                $mensajeOk = "No se pudo actualizar la información del aviso, inténtalo nuevamente";
+                $mensajeOk = "No se pudo actualizar la información de la ruta, inténtalo nuevamente";
             }
             $modal = "$('#modalOk').modal('toggle')";
             echo "<script>$(document).ready(function(){{$modal}});</script>";
@@ -37,10 +37,10 @@
         if(@$_GET["deleteOk"]){
             if(@$_GET["deleteOk"] == 1){
                 $tituloOk = "Aviso eliminado correctamente";
-                $mensajeOk = "La información del aviso fue eliminada de manera exitosa, no podrá recuperarse";
+                $mensajeOk = "La información de la ruta fue eliminada de manera exitosa, no podrá recuperarse";
             }else if(@$_GET["deleteOk"] == 2){
                 $tituloOk = "Ocurrió un error";
-                $mensajeOk = "No se pudo eliminar la información del aviso, inténtalo nuevamente";
+                $mensajeOk = "No se pudo eliminar la información de la ruta, inténtalo nuevamente";
             }
             $modal = "$('#modalOk').modal('toggle')";
             echo "<script>$(document).ready(function(){{$modal}});</script>";
@@ -79,36 +79,31 @@
                 <div class="row"  style="position: relative; top: 50px;  width: 98%; max-height:100%; margin: 0px;  justify-content: center;">
                     <div class="card" style="width: 800px;  color: #FFF; background-color: rgba(0,0,0,0.7);">
                         <div class="card-body justify-content-center">
-                            <h4 class="card-title" style="text-align: center;">Avisos</h4>
+                            <h4 class="card-title" style="text-align: center;">Rutas</h4>
                                 <?php
-                                    if(!$avisos){
-                                        echo "<h6 class='card-title' style'text-align: center;'>No hay avisos registrados</h6>";
+                                    if(!$rutas){
+                                        echo "<h6 class='card-title' style'text-align: center;'>No hay rutas registradas</h6>";
                                     }else{
                                 ?>
                                 <table class="table table-bordered table-sm table-hover" >
                                     <thead style="background-color: #0099CC; color: #FFFFFF; height: 20px;">
                                         <th>ID</th>
-                                        <th>Fecha de publicación</th>
-                                        <th>Aviso</th>
-                                        <th>Vigencia</th>
+                                        <th>Ruta</th>
+                                        <th>Color</th>
+                                        <th>Combustible por corrida</th>
+                                        <th>Forma de pago</th>
                                         <th></th>
                                     </thead>
                                     <tbody style="color: #FFF; ">
                                         <?php
-                                            foreach($avisos as $a){
+                                            foreach($rutas as $r){
                                                 echo "<tr>";
-                                                echo "<td>".$a["id_aviso"]."</td>";
-                                                echo "<td>".$a["aviso"]."</td>";
-                                                echo "<td>".$a["fecha_publicacion"]."</td>";
-                                                $hoy = strtotime(date("Y-m-d"));
-                                                $termino = strtotime($a["fecha_termino"]);
-                                                if($termino < $hoy){
-                                                    $fin = "Vencido (".$a["fecha_termino"].")";
-                                                }else{
-                                                    $fin = $a["fecha_termino"];
-                                                }
-                                                echo "<td>$fin</td>";
-                                                echo "<td><img style='cursor: pointer;' src='img/ico-editar.png' onclick=\"editar('".$a["id_aviso"]."');\" width='25px'><img style='cursor: pointer;' src='img/ico-borrar.png' width='25px'  onclick=\"eliminarConfirma('".$a["id_aviso"]."');\" ></td>";
+                                                echo "<td>".$r["id_ruta"]."</td>";
+                                                echo "<td>".$r["nombre"]."</td>";
+                                                echo "<td style='background-color: ".$r["color"]."'>&nbsp;</td>";
+                                                echo "<td>".$r["combustible"]." litros</td>";
+                                                echo "<td>".selectWhere("id_forma_cobro = ".$r["id_forma_cobro"], "descripcion", "forma_cobro")[0]["descripcion"]."</td>";
+                                                echo "<td><a href='admin_estacionesruta.php?ruta=".$r["id_ruta"]."'><img style='cursor: pointer;' src='img/ico-ver.png' width='25px'></a><img style='cursor: pointer;' src='img/ico-editar.png' onclick=\"editar('".$r["id_ruta"]."');\" width='25px'><img style='cursor: pointer;' src='img/ico-borrar.png' width='25px'  onclick=\"eliminarConfirma('".$r["id_ruta"]."');\" ></td>";
                                                 echo "</tr>";
                                             }
                                         ?>
@@ -117,6 +112,7 @@
                                 <?php
                                     }
                                 ?>
+                                <center><a href="form_reg_ruta.php"><button class="btn" style="margin-top: 10px; background-color: #0099CC; color: #FFFFFF;" data-dismiss="modal">Registrar nueva ruta</button></a></center>
                             </div>
                         </div>
                     </div><br>&nbsp;<br><br><br>
@@ -124,41 +120,6 @@
             </div>
         </div>
 
-        <!-- The Modal -->
-        <div class="modal fade" id="modalEditar" style="margin-top: 80px;">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="card" style="max-width: 500px; height: 390px; color: #FFF; background-color: rgba(0,0,0,0.85);">
-                        <div class="card-body justify-content-center">
-                            <h4 class="card-title" style="text-align: center;">Actualizar aviso</h4>
-                                <form action="webservices_cliente.php" method="post">
-                                    <input type="hidden" name="accion" value="editarAviso">
-                                    <input type="hidden" id="id_aviso" name="id_aviso">
-                                    <input type="hidden" id="publicacion" name="publicacion">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="vigencia">Vigencia:</label>
-                                            <input type="date" class="form-control" id="vigencia" name="vigencia" placeholder="Ingresa la fecha de término del aviso" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="aviso">Aviso:</label>
-                                            <textarea style="resize: none; "class="form-control" id="aviso" name="aviso" placeholder="Ingresa el aviso" rows="5" required></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <center>
-                                    <button type="button" class="btn" style="margin-top: 10px; background: transparent; border-color:#FFF; color: #FFFFFF;" data-dismiss="modal">Cancelar</button>
-                                    <button class="btn" style="margin-top: 10px; background-color: #0099CC; color: #FFFFFF;">Actualizar</button>
-                                </center>
-                                </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- The Modal -->
         <div class="modal fade" id="modalOk" style="margin-top: 80px;">
             <div class="modal-dialog">
@@ -187,8 +148,8 @@
                     
                 <div class="card" style="max-width: 500px; color: #FFF; background-color: rgba(0,0,0,0.85);">
                         <div class="card-body justify-content-center">
-                            <h4 class="card-title" style="text-align: center;">Eliminar registro de conductor</h4>
-                            <p>Si decides eliminar el registro del conductor, no podrás recuperar su información después. ¿Realmente deseas eliminar el registro del conductor?</p>
+                            <h4 class="card-title" style="text-align: center;">Eliminar registro de la ruta</h4>
+                            <p>Si decides eliminar el registro de la ruta, no podrás recuperar su información después. ¿Realmente deseas eliminar el registro de la ruta?</p>
                                 <center>
                                     <input type="hidden" id="aEliminar">
                                     <button type="button" class="btn" style="margin-top: 10px; background: transparent; border-color:#FFF; color: #FFFFFF;" data-dismiss="modal">Cancelar</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
