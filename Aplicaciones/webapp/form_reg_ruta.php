@@ -51,6 +51,7 @@
       var map;
       var marker;
       var numEstaciones = 0;
+      var markerClic;
       function registrarEstacion(){
             numEstaciones = parseInt($("#numEstaciones").val()) + 1;
             $("#numEstaciones").val(numEstaciones);
@@ -67,7 +68,69 @@
                 numEstaciones -= 1;
                 $("#numEstaciones").val(numEstaciones);
             });
+
+            markerClic.setPosition(new google.maps.LatLng(0,0));
+            $("#nombreEs").val("");
+            $("#locationEs").val("");
         }
+
+        function placeMarker(location, direccion=0) {
+            var lat = location.lat();
+            var lng = location.lng();
+
+            var punto = new google.maps.LatLng(lat, lng);
+            
+            if(!direccion){
+                var geocoder = new google.maps.Geocoder;
+                geocoder.geocode({
+                    'location': punto 
+                }, function(results, status) {
+                    // si la solicitud fue exitosa
+                    if (status === google.maps.GeocoderStatus.OK) {
+                        // si encontró algún resultado.
+                        if (results[1]) {
+                        $("#nombreEs").val(results[1].formatted_address.split(",")[0]);
+                        }
+                    }
+                });
+            }
+
+            $("#locationEs").val(lat+","+lng);
+
+        if ( markerClic ) {
+            markerClic.setPosition(location);
+        } else {
+            markerClic = new google.maps.Marker({
+            position: location,
+            map: map
+            });
+        }
+
+        }
+
+      function crearMarcador(t, lat, lng, img){
+          var marker;
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(lat, lng),
+            map: map,
+            icon: "img/marcadores/img_"+img+".png",
+            title: t
+        });
+        
+        
+        google.maps.event.addListener(marker, 'click', function(event) {
+            var coordenadas = marker.getPosition();
+            var lat = coordenadas.lat();
+            var lng = coordenadas.lng();
+            console.log(lat+", "+lng);
+            placeMarker(coordenadas, 1);
+            $('#nombreEs').val(marker.getTitle());
+            $('#nombreEs').attr('readonly', true);
+
+        });
+
+        return marker;
+      }
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 21.8833, lng: -102.3},
@@ -88,21 +151,11 @@
             if(locations[i][3] === "")
                 locations[i][3] = "http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png";
             locations[i][3] = aux.join();  
-            console.log("img/marcadores/img_"+locations[i][3]+".png");
-        marker = new google.maps.Marker({
-            position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-            map: map,
-            icon: "img/marcadores/img_"+locations[i][3]+".png"
-        });
+            console.log(locations[i][0]+"="+locations[i][1]+", "+locations[i][2]);
+            
+            crearMarcador(locations[i][0], locations[i][1], locations[i][2], locations[i][3]);
 
-        google.maps.event.addListener(marker, 'click', function(event) {
-        
-        var coordenadas = event.latLng;
-        var lat = coordenadas.lat();
-        var lng = coordenadas.lng();
-            console.log(lat+", "+lng);
-            placeMarker(event.latLng);
-        });
+
 
         }
 
@@ -111,43 +164,12 @@
             var coordenadas = event.latLng;
             
             placeMarker(event.latLng);
+
+            $('#nombreEs').attr('readonly', false);
             
         });
         
-        var markerClic;
-
-        function placeMarker(location) {
-            var lat = location.lat();
-            var lng = location.lng();
-            $("#nombre").val("Entré a placeMarker");
-
-            var punto = new google.maps.LatLng(lat, lng);
-            
-            var geocoder = new google.maps.Geocoder;
-            geocoder.geocode({
-                'location': punto 
-            }, function(results, status) {
-                // si la solicitud fue exitosa
-                if (status === google.maps.GeocoderStatus.OK) {
-                    // si encontró algún resultado.
-                    if (results[1]) {
-                    $("#nombreEs").val(results[1].formatted_address.split(",")[0]);
-                    }
-                }
-            });
-
-            $("#locationEs").val(lat+","+lng);
-
-        if ( markerClic ) {
-            markerClic.setPosition(location);
-        } else {
-            markerClic = new google.maps.Marker({
-            position: location,
-            map: map
-            });
-        }
-
-        }
+        
 
         <?php
             $rutas = selectWhere("id_ruta > 4", "*", "ruta");
@@ -219,26 +241,20 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="nombre">Nombre de la ruta:</label>
+                                            <label for="nombre" style="font-weight: bold; font-size: 18px;">Nombre de la ruta:</label>
                                             <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Ingresa el nombre" required>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="nombre">Color:</label>
+                                            <label for="nombre"  style="font-weight: bold; font-size: 18px;">Color:</label>
                                             <div id="colorDiv" style="width: 100%; height: 40px; border-radius: 5px; background-color: <?=$hex?>; cursor: pointer;" onclick="$('#colorHidden').click();">&nbsp;</div>
                                             <input type="color" name="color" id="colorHidden" value="<?=$hex?>" hidden onchange="cambiaColor(this.value)">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="combustible">Combustible por corrida:</label>
-                                            <input type="number" class="form-control" id="combustible" name="combustible" placeholder="Litros" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="forma">Forma de cobro:</label><br>
+                                            <label for="forma" style="font-weight: bold; font-size: 18px;">Forma de cobro:</label><br>
                                             <select multiple="multiple" style="width: 89%; height: 40px;">
                                                 <?php
                                                     $formas = selectWhere("1 = 1", "*", "forma_cobro");
@@ -251,15 +267,22 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="forma">Tarifas:</label><br>
+                                            <label for="combustible" style="font-weight: bold; font-size: 18px;">Combustible por corrida:</label>
+                                            <input type="number" class="form-control" id="combustible" name="combustible" placeholder="Litros" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="forma" style="font-weight: bold; font-size: 18px;">Tarifas:</label><br>
                                             <?php
                                                 $tarifas = selectWhere("1 = 1", "*", "tarifa");
                                                 foreach($tarifas as $t){
                                                     echo "<input type='checkbox' name='tarifas[]' value='".$t["id_tarifa"]."'> ".$t["descripcion"]." ($".$t["costo"].")<br>";
                                                 }
                                             ?>
+                                            <div style="cursor: pointer;" onclick = "$('#modalTarifa').modal('toggle')"><img src="img/ico-plus.png" width="20px" alt=""> Agregar tarifa</div>
                                         </div>
-                                        <label for="forma">Estaciones:</label><br>
+                                        <label for="forma" style="font-weight: bold; font-size: 18px;">Estaciones:</label><br>
                                             <div id="formEstaciones">
                                                 <input type="hidden" name="numEstaciones" id="numEstaciones" value="0">
                                             </div>
@@ -270,8 +293,20 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="forma">Horarios:</label><br>
-                                            
+                                            <label for="frecuencia" style="font-weight: bold; font-size: 18px;">Frecuencia de corridas:</label>
+                                            <input type="number" class="form-control" id="frecuencia" name="frecuencia" placeholder="Minutos" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="forma" style="font-weight: bold; font-size: 18px;">Horarios:</label><br>
+                                            <table>
+                                                <tr><td></td><td style="text-align: center;">Inicio</td><td style=" text-align: center;">Término</td></tr>
+                                            <?php
+                                                $dias = array("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo");
+                                                for($i = 0; $i < count($dias); $i++){
+                                                    echo "<tr><td>".$dias[$i].": </td><td style='padding: 2px;'><input class='form-control' type='time' name='dia_$i'></td><td style='padding: 2px;'><input class='form-control' type='time' name='dia_$i'></td></tr>";
+                                                }
+                                            ?>                                                
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
