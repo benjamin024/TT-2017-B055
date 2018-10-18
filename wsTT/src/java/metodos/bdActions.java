@@ -96,14 +96,14 @@ public class bdActions {
     }
     
     @WebMethod(operationName = "insRuta")  //falta validar que no exista duplicidad, formato de cada dato
-    public int insRuta(@WebParam(name = "idRu") int idRuta,@WebParam(name="nom")String nombre,@WebParam(name="comb")float combustible,@WebParam(name="fCob")int forCobro)
+    public int insRuta(@WebParam(name = "idRu") int idRuta,@WebParam(name="nom")String nombre,@WebParam(name="comb")float combustible,@WebParam(name="fCob")int forCobro,@WebParam(name="col")String color,@WebParam(name="frec")int frecuencia)
         {
             try{
                 
                 if(Conecta()==0)
                     throw new Exception();
 
-                resulIns=stmt.executeUpdate("insert into ruta values('"+idRuta+"','"+nombre+"','"+combustible+"','"+forCobro+"')");
+                resulIns=stmt.executeUpdate("insert into ruta values('"+idRuta+"','"+nombre+"','"+combustible+"','"+forCobro+"','"+color+"','"+frecuencia+"')");
                 if(resulIns>0){
                     resM=1;
                     conn.close();
@@ -211,8 +211,8 @@ public class bdActions {
             return resM;
         }
 
-    @WebMethod(operationName = "insHorario")  //Falta validar formato de los datos
-    public int insHorario(@WebParam(name = "dia") String dias,@WebParam(name = "hInicio") String horaInicio,@WebParam(name = "hFin") String horaFin,@WebParam(name = "frec") String frecuencia)
+    @WebMethod(operationName = "insRutaHorario")  //Falta validar formato de los datos
+    public int insRutaHorario(@WebParam(name = "idR") int idRuta,@WebParam(name = "dia") int dia,@WebParam(name = "hInicio") String horaInicio,@WebParam(name = "hFin") String horaFin)
         {
             DateFormat formatter = new SimpleDateFormat("HH:mm");
             
@@ -223,9 +223,9 @@ public class bdActions {
                 
                 java.sql.Time timeValue = new java.sql.Time(formatter.parse(horaInicio).getTime());
                 java.sql.Time timeValue2 = new java.sql.Time(formatter.parse(horaFin).getTime());
-                java.sql.Time timeValue3 = new java.sql.Time(formatter.parse(frecuencia).getTime());
+         
                 
-                resulIns=stmt.executeUpdate("insert into horario (dias,hora_inicio,hora_termino,frecuencia) values('"+dias+"','"+timeValue+"','"+timeValue2+"','"+timeValue3+"')");
+                resulIns=stmt.executeUpdate("insert into ruta_horario (id_ruta,dia,hora_inicio,hora_termino) values('"+idRuta+"','"+dia+"','"+timeValue+"','"+timeValue2+"')");
                 if(resulIns>0){
                     resM=1;
                     conn.close();
@@ -240,7 +240,7 @@ public class bdActions {
             return resM;
         } 
     
-    @WebMethod(operationName = "insRutaHorario")  //Falta validar duplicidad
+  /*  @WebMethod(operationName = "insRutaHorario")  //Falta validar duplicidad
     public int insRutaHorario(@WebParam(name = "idRu") int idRuta,@WebParam(name = "idHor") int idHorario)
         {
             try{
@@ -261,7 +261,7 @@ public class bdActions {
              resM=0;}
 
             return resM;
-        }
+        }*/
     
     @WebMethod(operationName = "insUnidad")  //Falta validar duplicidad, formato de datos en las fechas
     public int insUnidad(@WebParam(name = "idUni") String idUnidad,@WebParam(name = "cap") int capacidad,@WebParam(name = "idRu") int idRuta,@WebParam(name = "iniOper") String iniOperaciones,@WebParam(name = "resp") String responsable,@WebParam(name = "finOper") String finOperaciones,@WebParam(name="lat")double latitud,@WebParam(name="lon")double longitud)
@@ -546,14 +546,14 @@ public class bdActions {
     }
     
     @WebMethod(operationName = "altRuta")  //falta validar que no exista duplicidad, formato de cada dato
-    public int altRuta(@WebParam(name = "idRu") int idRuta,@WebParam(name="nom")String nombre,@WebParam(name="comb")float combustible,@WebParam(name="fCob")int forCobro)
+    public int altRuta(@WebParam(name = "idRu") int idRuta,@WebParam(name="nom")String nombre,@WebParam(name="comb")float combustible,@WebParam(name="fCob")int forCobro,@WebParam(name="col")String color,@WebParam(name="frec")int frecuencia)
         {
             try{
                 
                 if(Conecta()==0)
                     throw new Exception();
 
-                resulIns=stmt.executeUpdate("update ruta set nombre='"+nombre+"',combustible='"+combustible+"',id_forma_cobro='"+forCobro+"' where id_ruta='"+idRuta+"'");
+                resulIns=stmt.executeUpdate("update ruta set nombre='"+nombre+"',combustible='"+combustible+"',id_forma_cobro='"+forCobro+"',color='"+color+"',frecuencia='"+frecuencia+"' where id_ruta='"+idRuta+"'");
                 if(resulIns>0){
                     resM=1;
                     conn.close();
@@ -661,8 +661,8 @@ public class bdActions {
             return resM;
         }
 
-    @WebMethod(operationName = "altHorario")  //Falta validar formato de los datos
-    public int altHorario(@WebParam(name = "idHor") int idHorario,@WebParam(name = "dia") String dias,@WebParam(name = "hInicio") String horaInicio,@WebParam(name = "hFin") String horaFin,@WebParam(name = "frec") String frecuencia)
+    @WebMethod(operationName = "altRutaHorario")  //Falta validar formato de los datos
+    public int altRutaHorario(@WebParam(name = "idRut") int idRuta,@WebParam(name = "dia") String dia,@WebParam(name = "hInicio") String horaInicio,@WebParam(name = "hFin") String horaFin)
         {
             DateFormat formatter = new SimpleDateFormat("HH:mm");
             
@@ -673,9 +673,9 @@ public class bdActions {
                 
                 java.sql.Time timeValue = new java.sql.Time(formatter.parse(horaInicio).getTime());
                 java.sql.Time timeValue2 = new java.sql.Time(formatter.parse(horaFin).getTime());
-                java.sql.Time timeValue3 = new java.sql.Time(formatter.parse(frecuencia).getTime());
                 
-                resulIns=stmt.executeUpdate("update horario set dias='"+dias+"',hora_inicio='"+timeValue+"',hora_termino='"+timeValue2+"',frecuencia='"+timeValue3+"' where id_horario='"+idHorario+"'");
+                
+                resulIns=stmt.executeUpdate("update ruta_horario set hora_inicio='"+timeValue+"',hora_termino='"+timeValue2+"' where id_ruta='"+idRuta+"' && dia='"+dia+"'");
                 if(resulIns>0){
                     resM=1;
                     conn.close();
@@ -689,7 +689,7 @@ public class bdActions {
 
             return resM;
         } 
-    
+    /*
     @WebMethod(operationName = "altRutaHorario")  //Falta validar duplicidad
     public int altRutaHorario(@WebParam(name = "idRu") int idRuta,@WebParam(name = "idHor") int idHorario)
         {
@@ -711,7 +711,7 @@ public class bdActions {
              resM=0;}
 
             return resM;
-        }
+        }*/
     
     @WebMethod(operationName = "altUnidad")  //Falta validar duplicidad, formato de datos en las fechas
     public int altUnidad(@WebParam(name = "idUni") String idUnidad,@WebParam(name = "cap") int capacidad,@WebParam(name = "idRu") int idRuta,@WebParam(name = "iniOper") String iniOperaciones,@WebParam(name = "resp") String responsable,@WebParam(name = "finOper") String finOperaciones,@WebParam(name="lat")double latitud,@WebParam(name="lon")double longitud)
