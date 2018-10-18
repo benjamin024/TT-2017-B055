@@ -46,7 +46,7 @@ public class bdActions {
         try
         {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/tt?user=root&password=n0m3l0&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/tt?user=root&password=b3nj4m1n&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
             stmt = conn.createStatement();
         }
         catch(Exception e)
