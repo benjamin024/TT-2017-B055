@@ -65,8 +65,22 @@
         }
 
         function eliminar(id){
-            $.post("webservices_cliente.php", {accion: "eliminarAviso", id_aviso: id}, function(result){
-                location.href = "admin_avisos.php?deleteOk="+result;
+            $.post("webservices_cliente.php", {accion: "eliminarRuta", id_ruta: id}, function(result){
+                location.href = "admin_rutas.php?deleteOk="+result;
+            });
+        }
+
+        function verHorario(id){
+            $.post("webservices_cliente.php", {accion: "selectWherePost", where: "id_ruta = " + id, campos: "*", tabla: "ruta_horario"} , function(result){
+                var fila = "<tr>";
+                for(i = 0; i < 7; i++){
+                    var dia = JSON.parse(JSON.parse(result)[i]);
+                    console.log(dia);
+                    fila += "<td>" + dia.hora_inicio + " - " + dia.hora_termino + "</td>";
+                }
+                fila += "</tr>";
+                document.getElementById("tablaBody").innerHTML = fila;
+                $('#modalHorarios').modal('toggle');
             });
         }
     </script>
@@ -77,7 +91,7 @@
             <?php include("menu-lat.html"); ?>
             <div class="col-md-10">
                 <div class="row"  style="position: relative; top: 50px;  width: 98%; max-height:100%; margin: 0px;  justify-content: center;">
-                    <div class="card" style="width: 800px;  color: #FFF; background-color: rgba(0,0,0,0.7);">
+                    <div class="card" style="width: 1150px;  color: #FFF; background-color: rgba(0,0,0,0.7);">
                         <div class="card-body justify-content-center">
                             <h4 class="card-title" style="text-align: center;">Rutas</h4>
                                 <?php
@@ -90,8 +104,11 @@
                                         <th>ID</th>
                                         <th>Ruta</th>
                                         <th>Color</th>
+                                        <th>Horarios</th>
                                         <th>Combustible por corrida</th>
-                                        <th>Forma de pago</th>
+                                        <th>Frecuencia de corridas</th>
+                                        <th>Tarifas</th>
+                                        <th>Formas de pago</th>
                                         <th></th>
                                     </thead>
                                     <tbody style="color: #FFF; ">
@@ -101,9 +118,26 @@
                                                 echo "<td>".$r["id_ruta"]."</td>";
                                                 echo "<td>".$r["nombre"]."</td>";
                                                 echo "<td style='background-color: ".$r["color"]."'>&nbsp;</td>";
+                                                echo "<td style='text-align: center;'><img src='img/ico-horario.png' onclick='verHorario(".$r["id_ruta"].");' style='cursor: pointer;' width='25px'></td>";
                                                 echo "<td>".$r["combustible"]." litros</td>";
-                                                echo "<td>".selectWhere("id_forma_cobro = ".$r["id_forma_cobro"], "descripcion", "forma_cobro")[0]["descripcion"]."</td>";
-                                                echo "<td><a href='admin_estacionesruta.php?ruta=".$r["id_ruta"]."'><img style='cursor: pointer;' src='img/ico-ver.png' width='25px'></a><img style='cursor: pointer;' src='img/ico-editar.png' onclick=\"editar('".$r["id_ruta"]."');\" width='25px'><img style='cursor: pointer;' src='img/ico-borrar.png' width='25px'  onclick=\"eliminarConfirma('".$r["id_ruta"]."');\" ></td>";
+                                                echo "<td>".$r["frecuencia"]." minutos</td>";
+                                                echo "<td>";
+                                                $tarifas = selectWhere("rt.id_ruta = ".$r["id_ruta"], "descripcion", "ruta_tarifa as rt INNER JOIN tarifa as t ON rt.id_tarifa = t.id_tarifa");
+                                                $aux = array();
+                                                foreach($tarifas as $t){
+                                                    $aux[] = $t["descripcion"];
+                                                }
+                                                echo implode(", ", $aux);
+                                                echo "</td>";
+                                                echo "<td>";
+                                                $formas = selectWhere("id_forma_cobro IN (".$r["id_forma_cobro"].")", "descripcion", "forma_cobro");
+                                                $aux = array();
+                                                foreach($formas as $f){
+                                                    $aux[] = $f["descripcion"];
+                                                }
+                                                echo implode(", ", $aux);
+                                                echo "</td>";
+                                                echo "<td><a href='admin_estacionesruta.php?ruta=".$r["id_ruta"]."'><img style='cursor: pointer;' src='img/ico-ver.png' width='25px'></a><img style='cursor: pointer;' src='img/ico-borrar.png' width='25px'  onclick=\"eliminarConfirma('".$r["id_ruta"]."');\" ></td>";
                                                 echo "</tr>";
                                             }
                                         ?>
@@ -160,6 +194,33 @@
                     </div>
                 </div>
 
+                </div>
+            </div>
+        </div>
+
+        <!-- The Modal -->
+        <div class="modal fade" id="modalHorarios" style="margin-top: 80px;">
+            <div class="modal-dialog">
+                <div class="modal-content">   
+                    <div class="card" style="width: 700px; color: #FFF; background-color: rgba(0,0,0,1);">
+                            <div class="card-body justify-content-center">
+                                <h4 class="card-title" style="text-align: center;">Horarios de ruta</h4>
+                                <table class="table table-bordered table-sm table-hover" >
+                                    <thead style="background-color: #0099CC; color: #FFFFFF; height: 20px;">
+                                        <th>Lunes</th>
+                                        <th>Martes</th>
+                                        <th>Miércoles</th>
+                                        <th>Jueves</th>
+                                        <th>Viernes</th>
+                                        <th>Sábado</th>
+                                        <th>Domingo</th>
+                                    </thead>
+                                    <tbody style="color: #FFF; " id="tablaBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

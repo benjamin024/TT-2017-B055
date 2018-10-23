@@ -15,9 +15,25 @@
     <title>Estaciones</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css" />
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3o8vWFnS-rIPQDbrKsZxPvJLwZGfPi2Q&callback=initMap"
+    async defer></script>
     <script>
         function cambiaRuta(r){
             location.href="admin_estacionesruta.php?ruta="+r;
+        }
+
+        function abrirMapa(){
+            $('#modalEstacion').modal('toggle');
+        }
+
+        var map;
+        var marker;
+        
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 21.8833, lng: -102.3},
+            zoom: 16
+            });      
         }
     </script>
 </head>
@@ -47,8 +63,7 @@
                                     <thead style="background-color: #0099CC; color: #FFFFFF; height: 20px;">
                                         <th>ID</th>
                                         <th>Estación</th>
-                                        <th>Latitud</th>
-                                        <th>Longitud</th>
+                                        <th>Ver en mapa</th>
                                     </thead>
                                     <tbody style="color: #FFF; ">
                                         <?php
@@ -56,8 +71,7 @@
                                                 echo "<tr>";
                                                 echo "<td>".$e["id_estacion"]."</td>";
                                                 echo "<td>".$e["nombre"]."</td>";
-                                                echo "<td>".$e["latitud"]."</td>";
-                                                echo "<td>".$e["longitud"]."</td>";
+                                                echo "<td style='text-align: center; cursor: pointer;'><img src='img/ico-mapa.png' width='25px' onclick=\"abrirMapa('".$e["latitud"]."','".$e["longitud"]."')\"></td>";
                                                 echo "</tr>";
                                             }
                                         ?>
@@ -66,6 +80,21 @@
                             </div>
                         </div>
                     </div><br>&nbsp;<br><br><br>
+                </div>
+            </div>
+        </div>
+        <!-- The Modal -->
+        <div class="modal fade" id="modalEstacion" style="margin-top: 80px;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    
+                <div class="card" style="width: 800px; color: #FFF; background-color: #242520;">
+                        <div class="card-body justify-content-center">
+                            <div id="map" style=" height: 500px; width: 750px;"></div>
+                        </div>
+                    </div>
+                </div>
+
                 </div>
             </div>
         </div>
