@@ -1,10 +1,11 @@
 <?php
-    include("webservices_cliente.php");
+    include_once("webservices_cliente.php");
 
-    $estaciones = selectWhere("id_estacion > 50", "*", "estacion");
-    
-    foreach($estaciones as $e){
-        $ruta_e = selectWhere("id_estacion = ".$e["id_estacion"], "*", "ruta_estacion");
+    generaMarcador(@$_GET["id"]);
+
+
+    function generaMarcador($idEstacion){
+        $ruta_e = selectWhere("id_estacion = $idEstacion", "*", "ruta_estacion");
         if($ruta_e){
             $transbordos = array();
             foreach($ruta_e as $re){
@@ -20,7 +21,7 @@
             $arreglo .= "]";
             echo "$arreglo<br>";
             generaImagen($arreglo);
-
+            echo "<script>window.close();</script>";
         }
     }
 
@@ -129,10 +130,12 @@
                     
                     // Now is done
                     var imagen = canvas.toDataURL( "image/png" );
+                    console.log(imagen);
 
-                    $.post("prueba.php", {img: imagen, nombre: nombreImg}, function(result){
+                    $.post("saveImage.php", {img: imagen, nombre: nombreImg}, function(result){
                         console.log(result);
                     });
+                    
                 };
                 
                 </script>

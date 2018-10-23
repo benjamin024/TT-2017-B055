@@ -64,7 +64,7 @@ public class bdActions {
     
     //INICIAN INSERTS
     @WebMethod(operationName = "insTarifa") //falta validar que no exista duplicidad, formato de cada dato
-    public int insTarifa(@WebParam(name = "cost") float costo) {
+    public int insTarifa(@WebParam(name = "desc") String descripcion, @WebParam(name = "cost") float costo) {
         //String aux="";
         
         try{
@@ -76,7 +76,7 @@ public class bdActions {
             if(Conecta()==0)
                     throw new Exception();
            // aux = ;
-            resulIns=stmt.executeUpdate("insert into tarifa (costo) values('"+costo+"')");
+            resulIns=stmt.executeUpdate("insert into tarifa (descripcion, costo) values('"+descripcion+"',"+costo+")");
             //stmt.executeUpdate(aux);
            // if(rs.next()){
              // aux=rs.getString("Nombre")+","+rs.getString("Apellido");
@@ -96,14 +96,14 @@ public class bdActions {
     }
     
     @WebMethod(operationName = "insRuta")  //falta validar que no exista duplicidad, formato de cada dato
-    public int insRuta(@WebParam(name = "idRu") int idRuta,@WebParam(name="nom")String nombre,@WebParam(name="comb")float combustible,@WebParam(name="fCob")int forCobro,@WebParam(name="col")String color,@WebParam(name="frec")int frecuencia)
+    public int insRuta(@WebParam(name="nom")String nombre,@WebParam(name="comb")float combustible,@WebParam(name="fCob")String forCobro,@WebParam(name="col")String color,@WebParam(name="frec")int frecuencia)
         {
             try{
                 
                 if(Conecta()==0)
                     throw new Exception();
 
-                resulIns=stmt.executeUpdate("insert into ruta values('"+idRuta+"','"+nombre+"','"+combustible+"','"+forCobro+"','"+color+"','"+frecuencia+"')");
+                resulIns=stmt.executeUpdate("insert into ruta(nombre,combustible,id_forma_cobro,color,frecuencia) values('"+nombre+"',"+combustible+",'"+forCobro+"','"+color+"',"+frecuencia+")");
                 if(resulIns>0){
                     resM=1;
                     conn.close();
@@ -149,7 +149,7 @@ public class bdActions {
                 if(Conecta()==0)
                     throw new Exception();
 
-                resulIns=stmt.executeUpdate("insert into estacion (nombre,latitud,longitud) values('"+nombre+"','"+latitud+"','"+longitud+"')");
+                resulIns=stmt.executeUpdate("insert into estacion (nombre,latitud,longitud) values('"+nombre+"',"+latitud+","+longitud+")");
                 if(resulIns>0){
                     resM=1;
                     conn.close();
@@ -1470,5 +1470,31 @@ public class bdActions {
             return resM;
         }
     //Fin querys genericos
+
+    /**
+     * Web service operation
+     */
+    @WebMethod(operationName = "queryUDI")
+    public int queryUDI(@WebParam(name = "qr") String qr) {
+        try{
+               
+                if(Conecta()==0)
+                    throw new Exception();
+             
+                
+                resulIns=stmt.executeUpdate(qr);
+                if(resulIns>0){
+                    resM=1;
+                    conn.close();
+                } else{
+                    throw new Exception();
+                }
+            }
+         catch(Exception e){
+             System.out.println(e);
+             resM=0;}
+
+            return resM;
+        }
     
 }

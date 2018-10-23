@@ -1,18 +1,9 @@
 <?php
-    $img = @$_POST["img"];
-    $nombre =@$_POST["nombre"];
+    
+    $ids = array(68, 69, 81, 113);
 
-    list($type, $img) = explode(';', $img);
-    list(, $img)      = explode(',', $img);
-    $img = base64_decode($img);
-
-    if(!file_exists("img/marcadores/img_".$nombre.".png")){
-        if(file_put_contents("img/marcadores/img_".$nombre.".png", $img))
-            echo "OK! :D";
-        else
-            echo "Error :c";
-    }else{
-        echo "ya existe :P";
+    foreach($ids as $id){
+        echo "<script>window.open('generaimgs.php?id=$id', '_blank');</script>";
     }
         
 

@@ -4,7 +4,7 @@
 	$hex.= str_pad(dechex(rand(0,255)), 2, "0", STR_PAD_LEFT);
     $hex.= str_pad(dechex(rand(0,255)), 2, "0", STR_PAD_LEFT);
     
-    include("webservices_cliente.php");
+    include_once("webservices_cliente.php");
     $estaciones = selectWhere("id_estacion > 50", "*", "estacion");
     
     $marcadores = array();
@@ -51,16 +51,17 @@
       var map;
       var marker;
       var numEstaciones = 0;
+      var totalEstaciones = 0;
       var markerClic;
       function registrarEstacion(){
             numEstaciones = parseInt($("#numEstaciones").val()) + 1;
             $("#numEstaciones").val(numEstaciones);
         
             var formEstacion = document.getElementById("formEstaciones");
-            formEstacion.innerHTML += "<input type='hidden' name='estacion_"+numEstaciones+"' id='estacion_"+numEstaciones+"' value='"+$("#nombreEs").val()+"--"+$("#locationEs").val()+"'>";
+            formEstacion.innerHTML += "<input type='hidden' name='estacion_"+totalEstaciones+"' id='estacion_"+totalEstaciones+"' value='"+$("#nombreEs").val()+"--"+$("#locationEs").val()+"'>";
             
             var lista = document.getElementById("sortable");
-            lista.innerHTML += "<li class='ui-state-default'>"+$("#nombreEs").val()+"<img src='img/ico-borrar-black.png' class='delete' height='22px'></li>";
+            lista.innerHTML += "<li class='ui-state-default' id='"+totalEstaciones+"'>"+$("#nombreEs").val()+"<img src='img/ico-borrar-black.png' class='delete' height='22px'></li>";
             $('#modalEstacion').modal('toggle');
             
             $("#sortable .delete").click(function() {
@@ -72,6 +73,8 @@
             markerClic.setPosition(new google.maps.LatLng(0,0));
             $("#nombreEs").val("");
             $("#locationEs").val("");
+
+            totalEstaciones++;
         }
 
         function placeMarker(location, direccion=0) {
@@ -233,11 +236,11 @@
             <?php include("menu-lat.html"); ?>
             <div class="col-md-10">
             <div class="row align-items-center h-100"  style="position: absolute; top: 0px;  width: 90%; height:100%; margin: 0px;  justify-content: center;">
-                    <div class="card" style="max-width: 650px; color: #FFF; background-color: rgba(0,0,0,0.85);">
+                    <div class="card" style="width: 800px; color: #FFF; background-color: rgba(0,0,0,0.85);">
                         <div class="card-body justify-content-center">
                             <h4 class="card-title" style="text-align: center;">Registrar ruta</h4>
-                                <form action="webservices_cliente.php" method="post">
-                                    <input type="hidden" name="accion" value="crearAviso">
+                                <form action="webservices_cliente.php" id="formulario" method="post">
+                                    <input type="hidden" name="accion" value="registrarRuta">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -255,6 +258,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="forma" style="font-weight: bold; font-size: 18px;">Forma de cobro:</label><br>
+                                            <input type="hidden" name="formasCobro" id="formasCobro">
                                             <select multiple="multiple" style="width: 89%; height: 40px;">
                                                 <?php
                                                     $formas = selectWhere("1 = 1", "*", "forma_cobro");
@@ -274,17 +278,20 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="forma" style="font-weight: bold; font-size: 18px;">Tarifas:</label><br>
+                                            <div id="lisTarifa">
                                             <?php
                                                 $tarifas = selectWhere("1 = 1", "*", "tarifa");
                                                 foreach($tarifas as $t){
                                                     echo "<input type='checkbox' name='tarifas[]' value='".$t["id_tarifa"]."'> ".$t["descripcion"]." ($".$t["costo"].")<br>";
                                                 }
                                             ?>
-                                            <div style="cursor: pointer;" onclick = "$('#modalTarifa').modal('toggle')"><img src="img/ico-plus.png" width="20px" alt=""> Agregar tarifa</div>
+                                            </div>
+                                            <div style="cursor: pointer;" onclick = "$('#modalAddTarifa').modal('toggle')"><img src="img/ico-plus.png" width="20px" alt=""> Agregar tarifa</div>
                                         </div>
                                         <label for="forma" style="font-weight: bold; font-size: 18px;">Estaciones:</label><br>
                                             <div id="formEstaciones">
                                                 <input type="hidden" name="numEstaciones" id="numEstaciones" value="0">
+                                                <input type="hidden" name="ordenEstaciones" id="ordenEstaciones">
                                             </div>
                                             <ul id="sortable">
                                                 
@@ -303,14 +310,14 @@
                                             <?php
                                                 $dias = array("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo");
                                                 for($i = 0; $i < count($dias); $i++){
-                                                    echo "<tr><td>".$dias[$i].": </td><td style='padding: 2px;'><input class='form-control' type='time' name='dia_$i'></td><td style='padding: 2px;'><input class='form-control' type='time' name='dia_$i'></td></tr>";
+                                                    echo "<tr><td>".$dias[$i].": </td><td style='padding: 2px;'><input class='form-control' type='time' name='ini_$i'></td><td style='padding: 2px;'><input class='form-control' type='time' name='fin_$i'></td></tr>";
                                                 }
                                             ?>                                                
                                             </table>
                                         </div>
                                     </div>
                                 </div>
-                                <center><button class="btn" style="margin-top: 10px; background-color: #0099CC; color: #FFFFFF;">Registrar</button></center>
+                                <center><button class="btn" style="margin-top: 10px; background-color: #0099CC; color: #FFFFFF;" onclick="enviaFormulario()">Registrar</button></center>
                                 </form>
                         </div>
                     </div>
@@ -342,6 +349,36 @@
                 </div>
             </div>
         </div>
+        <!-- The Modal -->
+        <div class="modal fade" id="modalAddTarifa" style="margin-top: 80px;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="card" style="max-width: 500px; color: #FFF; background-color: rgba(0,0,0,0.85);">
+                        <div class="card-body justify-content-center">
+                            <h4 class="card-title" style="text-align: center;">Registrar tarifa</h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="nombreTar">Nombre de la tarifa:</label>
+                                            <input type="text" class="form-control" id="nombreTar" name="nombreTar" placeholder="Ingresa el nombre de la tarifa" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="costo">Costo:</label>
+                                            <input type="number" class="form-control" id="costo" name="costo" placeholder="Ingresa el costo de la tarifa" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <center>
+                                    <button type="button" class="btn" style="margin-top: 10px; background: transparent; border-color:#FFF; color: #FFFFFF;" data-dismiss="modal">Cancelar</button>
+                                    <button class="btn" style="margin-top: 10px; background-color: #0099CC; color: #FFFFFF;" onclick="registraTarifa();">Actualizar</button>
+                                </center>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     
     <script>
@@ -362,6 +399,21 @@
 
         function cambiaColor(color){
             $("#colorDiv").attr("style", "width: 100%; height: 40px; border-radius: 5px; background-color: "+color+"; cursor: pointer;");
+        }
+
+        function registraTarifa(){
+            $.post("webservices_cliente.php", {accion: "registrarTarifa", descripcion: $("#nombreTar").val(), costo: $("#costo").val()}, function(result){
+                var lista = document.getElementById("lisTarifa");
+                lista.innerHTML += "<input type='checkbox' name='tarifas[]' value='"+result+"'> "+$("#nombreTar").val()+" ($"+$("#costo").val()+")<br>";
+                $("#nombreTar").val("");
+                $("#costo").val("");
+            });
+        }
+
+        function enviaFormulario(){
+            $("#formasCobro").val($('select').multipleSelect('getSelects').toString());
+            $("#ordenEstaciones").val($("#sortable").sortable("toArray").toString());
+            document.getElementById("formulario").submit();
         }
     </script>
 </body>

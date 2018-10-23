@@ -227,4 +227,120 @@
         print_r($result); //implode("~",$result);
         exit(1);
     }
+
+    if($ACCION == "registrarTarifa"){
+        $parametros["desc"] =@$_POST["descripcion"];
+        $parametros["cost"] =@$_POST["costo"];
+
+        $result = $client->insTarifa($parametros);
+
+        if($result){
+            $idMax = selectWhere("1 = 1", "MAX(id_tarifa) as id", "tarifa")[0]["id"];
+            echo $idMax;
+        }else
+            echo $idMax;
+        exit(1);
+    }
+
+    if($ACCION == "registrarRuta"){
+        
+        $nombreR =@$_POST["nombre"];
+        $color =@$_POST["color"];
+        $formasC =@$_POST["formasCobro"];
+        $combustible =@$_POST["combustible"];
+        $tarifas =@$_POST["tarifas"];
+        $numEstaciones=@$_POST["numEstaciones"];
+        $ordenEstaciones=@$_POST["ordenEstaciones"];
+        $frecuencia =@$_POST["frecuencia"];
+        
+        $rutaData["nom"] = $nombreR;
+        $rutaData["comb"] = $combustible;
+        $rutaData["fCob"] = $formasC;
+        $rutaData["col"] = $color;
+        $rutaData["frec"] = $frecuencia;
+
+        if($client->insRuta($rutaData)){
+            $idR = selectWhere("1 = 1", "MAX(id_ruta) as id", "ruta")[0]["id"];
+            foreach($tarifas as $t){
+                $rtData["idRu"] = $idR;
+                $rtData["idTar"] = $t;
+                $client->insRutaTarifa($rtData);
+            }
+            for($i = 0; $i < 7; $i++){
+                $rhData["idR"] = $idR;
+                $rhData["dia"] = $i;
+                $rhData["hInicio"] =@$_POST["ini_$i"];
+                $rhData["hFin"] =@$_POST["fin_$i"];
+                $client->insRutaHorario($rhData);
+            }
+            $ordenEstaciones = explode(",", $ordenEstaciones);
+            $indices = array();
+            foreach($ordenEstaciones as $oe){
+                $aux = explode("--",@$_POST["estacion_$oe"]);
+                $existe = selectWhere("nombre LIKE '".$aux[0]."'", "id_estacion", "estacion")[0]["id_estacion"];
+                if($existe){
+                    $indices[] = $existe;
+                }else{
+                    $esData["nom"] = $aux[0];
+                    $esData["lat"] = explode(",",$aux[1])[0];
+                    $esData["lon"] = explode(",",$aux[1])[1];
+                    $client->insEstacion($esData);
+                    $indices[] = selectWhere("1 = 1", "MAX(id_estacion) AS id", "estacion")[0]["id"];
+                }
+            }
+            for($i = 0; $i < $numEstaciones; $i++){
+                if(($i + 1) >= $numEstaciones)
+                    $siguiente = 0;
+                else
+                    $siguiente = $indices[$i + 1];
+
+                $reData["idRu"] = $idR;
+                $reData["idEst"] = $indices[$i];
+                $reData["sigEst"] = $siguiente;
+                $client->insRutaEstacion($reData);
+                echo "<script>window.open('generaimgs.php?id=".$indices[$i]."', '_blank');</script>";
+            }
+            echo "<script>location.href ='admin_rutas.php?addOk=1';</script>";
+        }else{
+            echo "<script>location.href ='admin_rutas.php?addOk=2';</script>";
+        }
+        exit(1);
+    }
+
+    if($ACCION == "eliminarRuta"){
+        $idR =@$_POST["id_ruta"];
+
+        $parametros["idRu"] = $idR;
+        $result = $client->delRuta($parametros);
+        
+        $parametros = array();
+        $parametros["qr"] = "DELETE FROM ruta_tarifa WHERE id_ruta = $idR";
+        $result = $client->queryUDI($parametros);
+        
+        $parametros = array();
+        $parametros["idRu"] = $idR;
+        $result = $client->delRutaHorario($parametros);
+
+        $aEliminar = array();
+        $est_rut = selectWhere("id_ruta = $idR", "id_estacion", "ruta_estacion");
+        foreach($est_rut as $er){
+            $numR = selectWhere("id_estacion = ".$er["id_estacion"], "count(*) as num", "ruta_estacion")[0]["num"];
+            if($numR == 1)
+                $aEliminar[] = $er["id_estacion"];
+        }
+
+        foreach($aEliminar as $ae){
+            $parametros = array();
+            $parametros["idEst"] = $ae;
+            $result = $client->delEstacion($parametros);
+        }        
+
+        $parametros = array();
+        $parametros["qr"] = "DELETE FROM ruta_estacion WHERE id_ruta = $idR";
+        $result = $client->queryUDI($parametros);
+
+        echo 1;
+
+        exit(1);
+    }
 ?>
