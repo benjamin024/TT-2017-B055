@@ -46,7 +46,7 @@ public class bdActions {
         try
         {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/tt?user=root&password=b3nj4m1n&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/tt?user=root&password=n0m3l0&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
             stmt = conn.createStatement();
         }
         catch(Exception e)
@@ -464,7 +464,7 @@ public class bdActions {
                     throw new Exception();
              
                 
-                resulIns=stmt.executeUpdate("insert comentario(correo_usuario,comentario,fecha) values('"+correoUsuario+"','"+comentario+"','"+fecha+"')");
+                resulIns=stmt.executeUpdate("insert comentario(correo_usuario,comentario,fecha) values('"+correoUsuario+"','"+comentario+"',"+fecha+")");
                 if(resulIns>0){
                     resM=1;
                     conn.close();
@@ -1413,7 +1413,7 @@ public class bdActions {
                 if(Conecta()==0)
                     throw new Exception();
              
-                if(condicion==null)
+                if(condicion==null||condicion.equals(""))
                     resC=stmt.executeQuery("select "+campos+" from "+tabla);
                 else
                     resC=stmt.executeQuery("select "+campos+" from "+tabla+" where "+condicion);
