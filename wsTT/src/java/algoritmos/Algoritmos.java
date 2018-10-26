@@ -314,6 +314,92 @@ public class Algoritmos {
         }
     }
     
+        public static void calculaFrecuencia() throws SQLException{
+        if(bd.conecta()){
+            
+        
+        }else{
+            System.out.println("Error en la conexión a la base de datos");
+        }
+    }
+    
+    public static void generaViajeCompleto(int estacionInicial, int estacionFinal,ArrayList<Integer> camino) throws SQLException{
+        if(bd.conecta()){
+            
+            int rutaInicial=0, rutaFinal=0;
+
+            rutaInicial=camino.get(0);
+
+            rutaFinal=camino.get(camino.size()-1);
+            System.out.println("Inicial: "+rutaInicial);
+            System.out.println("Final: "+rutaFinal);
+            
+            int rutaActual=0,rutaSiguiente=0,estPartida=estacionInicial,estTope=0;
+            ArrayList<Integer> estacionesRuta = new ArrayList<>();
+
+            for(int i=0;i<camino.size();i++)
+            {
+                rutaActual=camino.get(i);
+                
+                if(i!=camino.size()-1)
+                    {
+                        rutaSiguiente=camino.get(i+1);
+                        //se hace un select de donde se unen las rutas
+                        rs = bd.consulta("select r.id_estacion from ruta_estacion r join ruta_estacion e on r.id_estacion=e.id_estacion where r.id_ruta="+rutaActual+" and e.id_ruta="+rutaSiguiente+" group by r.id_estacion;");
+                        while(rs.next()){
+                            estTope=rs.getInt("id_estacion");
+                            break;
+                        }
+                    }
+                else
+                    estTope=estacionFinal;
+
+                int topeAux=0,partidaAux=0,flagInicio=0,contador=0;
+                
+                rs = bd.consulta("select * from ruta_estacion where id_ruta="+rutaActual+";");
+                
+                while(rs.next()){
+                        if(rs.getInt("id_estacion")==estPartida && flagInicio!=1)
+                        {
+                            flagInicio=1;
+                            topeAux=estTope;
+                            partidaAux=estPartida;
+                        }
+                    
+                        if(rs.getInt("id_estacion")==estTope && flagInicio!=1)
+                        {
+                            flagInicio=1;
+                            topeAux=estPartida;
+                            partidaAux=estTope;
+                        }
+                        
+                        if(flagInicio==1)
+                            {
+                                if(rs.getInt("id_estacion")==topeAux || rs.getInt("id_estacion")==partidaAux)
+                                    contador++;
+                                
+                                estacionesRuta.add(rs.getInt("id_estacion"));
+                            }
+                        
+                        if(contador==2)
+                            break;
+                            
+                    }
+
+                
+                estPartida = estTope;
+            }
+            
+            
+            for(int i=0;i<estacionesRuta.size();i++)
+                System.out.print(" "+estacionesRuta.get(i));        
+     
+        }else{
+            System.out.println("Error en la conexión a la base de datos");
+        }
+    }
+    
+    
     
     public static void generaViajesUnidad(int ruta) throws Exception{
         if(bd.conecta()){
