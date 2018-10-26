@@ -45,7 +45,7 @@ public class bdActions {
     {
         try
         {
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
             conn = DriverManager.getConnection("jdbc:mysql://localhost/tt?user=root&password=n0m3l0&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
             stmt = conn.createStatement();
         }
@@ -1407,7 +1407,7 @@ public class bdActions {
             
             String json = "";
             ArrayList<String> result = new ArrayList<String>();
-            ArrayList results = new ArrayList();
+            ArrayList<String> results = new ArrayList<String>();
             try{
                
                 if(Conecta()==0)
@@ -1428,7 +1428,8 @@ public class bdActions {
                     for(int i=1; i<=columns; i++){
                       result.add("\""+md.getColumnName(i)+"\":\""+resC.getObject(i)+"\"");
                     }
-                    results.add("{"+String.join(",", result)+"}");
+                    String joinAux = String.join(",", result);
+                    results.add("{"+joinAux+"}");
                     result.clear();
                 }
                 

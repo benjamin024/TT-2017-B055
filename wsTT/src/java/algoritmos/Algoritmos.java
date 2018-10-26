@@ -74,7 +74,7 @@ public class Algoritmos {
     
     public static void generaRutasTransbordos(int estacionInicial, int estacionFinal) throws SQLException{
         if(bd.conecta()){
-            String FILENAME = "D:\\Luis R\\Documents\\TT-2017-B055\\wsTT\\grafo_transbordos.info";
+            String FILENAME = "grafo_transbordos.info";
             //String FILENAME = "D:\\Luis R\\Documents\\TT1\\algoritmos\\matriz.txt";
             BufferedReader br = null;
             FileReader fr = null;
@@ -237,19 +237,19 @@ public class Algoritmos {
                                         //buscamos los nodos a los que esta unida, si son el primero solo busca el siguiente, si es el ultimo el anterior, los demas buscan siguiente y anterior
                                         if(k==0)
                                             {
-                                                vecinoAnt=-1;
+                                                //vecinoAnt=-1;
                                                 vecinoPost=rutasGen.get(k+1);
                                             }
                                         else 
                                             {
                                                 if(k==rutasGen.size()-1)
                                                     {
-                                                        vecinoAnt=rutasGen.get(k-1);
+                                                        //vecinoAnt=rutasGen.get(k-1);
                                                         vecinoPost=-1;
                                                     }
                                                 else
                                                     {
-                                                        vecinoAnt=rutasGen.get(k-1);
+                                                        //vecinoAnt=rutasGen.get(k-1);
                                                         vecinoPost=rutasGen.get(k+1);
                                                     }
                                             }
@@ -257,7 +257,7 @@ public class Algoritmos {
                                         //Comenzamos a poner 1 donde se unan los nodos
                                         for(int y=1;y<contador;y++)
                                         {
-                                            if(matrizResultado[0][y]==vecinoAnt || matrizResultado[0][y]==vecinoPost)
+                                            if(matrizResultado[0][y]==vecinoPost)
                                                 matrizResultado[filaActual][y]=1;
                                         }
                                     }
@@ -487,7 +487,7 @@ public class Algoritmos {
         }
     }
     
-    private static int obtieneUnidadesMinimas(int ruta) throws SQLException{
+    public static int obtieneUnidadesMinimas(int ruta) throws SQLException{
         int minimo = 0;
         //Obtenemos tiempo de recorrido y frecuencias de viaje de la ruta
         if(bd.conecta()){
@@ -516,7 +516,10 @@ public class Algoritmos {
         try {
             //reduceGrafoATransbordos();
             //generaViajesUnidad(6);
-            obtieneUnidadesMinimas(8);
+            //obtieneUnidadesMinimas(8);
+            //Dijkstra d = new Dijkstra();
+            
+            generaRutasTransbordos(96, 57);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
