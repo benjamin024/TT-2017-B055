@@ -487,10 +487,36 @@ public class Algoritmos {
         }
     }
     
+    private static int obtieneUnidadesMinimas(int ruta) throws SQLException{
+        int minimo = 0;
+        //Obtenemos tiempo de recorrido y frecuencias de viaje de la ruta
+        if(bd.conecta()){
+            rs = bd.consulta("SELECT tiempo_recorrido, frecuencia_ida, frecuencia_vuelta FROM ruta WHERE id_ruta = " + ruta);
+            rs.next();
+            int tiempo_viaje = rs.getInt("tiempo_recorrido");
+            int frecuencia_ida = rs.getInt("frecuencia_ida");
+            int frecuencia_vuelta = rs.getInt("frecuencia_vuelta");
+            //Utilizamos la siguiente fórmula para obtener el número minimo de unidades por sentido de ruta
+            // min = 2 * (t / f) donde t es el tiempo de viaje y f la frecuencia del sentido de la ruta
+            int min_ida = (int) Math.ceil(2 * (tiempo_viaje / frecuencia_ida));
+            int min_vuelta = (int) Math.ceil(2 * (tiempo_viaje / frecuencia_vuelta));
+            System.out.println("min_ida: " + min_ida);
+            System.out.println("min_vuelta: " + min_vuelta);
+            //Para obtener el mínimo total de unidades para operar la ruta, calcularemos el promedio entre ambos mínimos
+            minimo = (int) Math.ceil((min_ida + min_vuelta) / 2);
+            System.out.println("minimo: " + minimo);
+        }else{
+            System.out.println("Error en la conexión a la base de datos");
+            minimo = -1;
+        }
+        return minimo;
+    }
+    
     public static void main(String[] args) {
         try {
             //reduceGrafoATransbordos();
-            generaViajesUnidad(6);
+            //generaViajesUnidad(6);
+            obtieneUnidadesMinimas(8);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -498,31 +524,31 @@ public class Algoritmos {
 
     private static String generaRegistro(int id_viaje_unidad, int id_estacion, int capacidad, int tiempoPEstacion) throws Exception {
         rs = bd.consulta("select total_pasajeros from viaje_unidad where id_viaje_unidad = " + id_viaje_unidad);
-                    rs.next();
-                    int total_pasajeros = rs.getInt("total_pasajeros");
-                    rs = bd.consulta("select * from registro where id_viaje_unidad = " + id_viaje_unidad + " ORDER BY id_registro DESC");
-                    rs.next();
-                    int suben = new Random(System.currentTimeMillis()).nextInt(capacidad - rs.getInt("no_pasajeros") + 1);
-                    int no_pasajeros_especial = rs.getInt("no_pasajeros_especial") + ((suben > 0) ? new Random(System.currentTimeMillis()).nextInt(suben) : 0);
-                    int bajan = new Random(System.currentTimeMillis()).nextInt(rs.getInt("no_pasajeros") + 1);
-                    int no_pasajeros = rs.getInt("no_pasajeros") + suben - bajan;
-                    total_pasajeros += suben;
-                    DateFormat f = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                    Date hora_fecha = f.parse(rs.getString("fecha_hora"));
-                    Calendar cal= Calendar.getInstance();
-                    cal.setTime(hora_fecha);
-                    int sumaMinutos = 0;
-                    int operacion = new Random(System.currentTimeMillis()).nextInt(2);
-                    if(operacion == 1)
-                        sumaMinutos = tiempoPEstacion + new Random(System.currentTimeMillis()).nextInt((2 * tiempoPEstacion) + 1);
-                    else
-                        sumaMinutos = tiempoPEstacion - new Random(System.currentTimeMillis()).nextInt(tiempoPEstacion);
-                    cal.add(Calendar.MINUTE, sumaMinutos);
-                    DateFormat d = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
-                    String fecha_hora = d.format(cal.getTime());
-                    bd.actualizacion("insert into registro (id_viaje_unidad, id_estacion, no_pasajeros, no_pasajeros_especial, fecha_hora) values(" + id_viaje_unidad + ", " + id_estacion + ", " + no_pasajeros + ", " + no_pasajeros_especial + ", '" + fecha_hora + "');");
-                    bd.actualizacion("update viaje_unidad set total_pasajeros = " + total_pasajeros + " where id_viaje_unidad = " + id_viaje_unidad);
-                    
-                    return fecha_hora;
+        rs.next();
+        int total_pasajeros = rs.getInt("total_pasajeros");
+        rs = bd.consulta("select * from registro where id_viaje_unidad = " + id_viaje_unidad + " ORDER BY id_registro DESC");
+        rs.next();
+        int suben = new Random(System.currentTimeMillis()).nextInt(capacidad - rs.getInt("no_pasajeros") + 1);
+        int no_pasajeros_especial = rs.getInt("no_pasajeros_especial") + ((suben > 0) ? new Random(System.currentTimeMillis()).nextInt(suben) : 0);
+        int bajan = new Random(System.currentTimeMillis()).nextInt(rs.getInt("no_pasajeros") + 1);
+        int no_pasajeros = rs.getInt("no_pasajeros") + suben - bajan;
+        total_pasajeros += suben;
+        DateFormat f = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Date hora_fecha = f.parse(rs.getString("fecha_hora"));
+        Calendar cal= Calendar.getInstance();
+        cal.setTime(hora_fecha);
+        int sumaMinutos = 0;
+        int operacion = new Random(System.currentTimeMillis()).nextInt(2);
+        if(operacion == 1)
+            sumaMinutos = tiempoPEstacion + new Random(System.currentTimeMillis()).nextInt((2 * tiempoPEstacion) + 1);
+        else
+            sumaMinutos = tiempoPEstacion - new Random(System.currentTimeMillis()).nextInt(tiempoPEstacion);
+        cal.add(Calendar.MINUTE, sumaMinutos);
+        DateFormat d = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
+        String fecha_hora = d.format(cal.getTime());
+        bd.actualizacion("insert into registro (id_viaje_unidad, id_estacion, no_pasajeros, no_pasajeros_especial, fecha_hora) values(" + id_viaje_unidad + ", " + id_estacion + ", " + no_pasajeros + ", " + no_pasajeros_especial + ", '" + fecha_hora + "');");
+        bd.actualizacion("update viaje_unidad set total_pasajeros = " + total_pasajeros + " where id_viaje_unidad = " + id_viaje_unidad);
+
+        return fecha_hora;
     }
 }
