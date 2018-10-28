@@ -13,7 +13,7 @@ import java.util.Random;
 import java.util.Stack;
 
 public class Algoritmos {
-    private static Conexion bd = new Conexion("tt", "root", "b3nj4m1n");
+    private static Conexion bd = new Conexion("tt", "root", "n0m3l0");
     private static ResultSet rs;
     
     public static void reduceGrafoATransbordos() throws SQLException{
@@ -72,7 +72,7 @@ public class Algoritmos {
         }
     }
     
-    public static void generaRutasTransbordos(int estacionInicial, int estacionFinal) throws SQLException{
+    public static /*int[][]*/ void generaRutasTransbordos(int estacionInicial, int estacionFinal,int operacion) throws SQLException{
         if(bd.conecta()){
             String FILENAME = "grafo_transbordos.info";
             //String FILENAME = "D:\\Luis R\\Documents\\TT1\\algoritmos\\matriz.txt";
@@ -289,11 +289,12 @@ public class Algoritmos {
                                         System.out.print(matrizResultado[i][j]+"|");
                                 System.out.print("\n");
                             }
-
+                     
+                  //  return matrizResultado;
                 } catch (IOException e) {
 
                         e.printStackTrace();
-
+                     //   return null;
                 } finally {
 
                         try {
@@ -303,31 +304,86 @@ public class Algoritmos {
 
                                 if (fr != null)
                                         fr.close();
-
+                                
                         } catch (IOException ex) {
-
+                            
                             ex.printStackTrace();
                         }
                 }
         }else{
             System.out.println("Error en la conexión a la base de datos");
+          //  return null;
         }
     }
     
-        public static void calculaFrecuencia() throws SQLException{
+        public static void calculaFrecuencia(int ruta,int sentido) throws SQLException{
         if(bd.conecta()){
-            
+            int flujo=0;
+            rs = bd.consulta("select r.id_estacion from ruta_estacion r join ruta_estacion e on r.id_estacion=e.id_estacion where r.id_ruta="+rutaActual+" and e.id_ruta="+rutaSiguiente+" group by r.id_estacion;");
+            while(rs.next()){
+                flujo=flujo+rs.getInt("id_estacion");
+                break;
+            }
         
         }else{
             System.out.println("Error en la conexión a la base de datos");
         }
     }
     
-    public static void generaViajeCompleto(int estacionInicial, int estacionFinal,ArrayList<Integer> camino) throws SQLException{
+    public static int[][] generaViajeCompleto(int estacionInicial, int estacionFinal,int[][]path) throws SQLException{
         if(bd.conecta()){
             
-            int rutaInicial=0, rutaFinal=0;
+            int rutaInicial=0, rutaFinal=0,nodoAnterior,nodoSiguiente,auxValueAnt,auxValueSig,valueNodo;
+            ArrayList<Integer> camino = new ArrayList<>();
+            camino.clear();
+            
+            for(int i=1;i<path.length;i++)
+                camino.add(path[0][i]);
+            
 
+            for(int i=1;i<path.length;i++)
+            {
+                //camino.add();
+                nodoAnterior=0;
+                nodoSiguiente=0;
+                auxValueAnt=0;
+                auxValueSig=0;
+                valueNodo=0;
+                for(int j=1;j<path.length;j++)
+                {
+                    if(path[i][j]==1)
+                    {
+                        nodoSiguiente=path[0][j];
+                        nodoAnterior=path[i][0];
+                        auxValueAnt=camino.indexOf(nodoAnterior);
+                        auxValueSig=camino.indexOf(nodoSiguiente);                     
+                        
+                        
+                            if(auxValueSig!=auxValueAnt+1)
+                            {
+                                if(auxValueAnt>auxValueSig)
+                                    {
+                                        auxValueSig=camino.indexOf(nodoAnterior);
+                                        auxValueAnt=camino.indexOf(nodoSiguiente);
+                                    }
+                                valueNodo=camino.get(auxValueSig);
+
+                                camino.remove(auxValueSig);
+                                auxValueAnt=camino.indexOf(nodoAnterior);
+
+                                if(auxValueAnt+1>camino.size())
+                                    camino.add(valueNodo);
+                                else
+                                    camino.add(auxValueAnt+1,valueNodo);
+                            }
+                    }
+                }
+            }
+            
+            for(int i=0;i<camino.size();i++)
+                System.out.print(" "+camino.get(i));
+            
+            System.out.print("\n");
             rutaInicial=camino.get(0);
 
             rutaFinal=camino.get(camino.size()-1);
@@ -354,7 +410,7 @@ public class Algoritmos {
                 else
                     estTope=estacionFinal;
 
-                int topeAux=0,partidaAux=0,flagInicio=0,contador=0;
+                int topeAux=0,partidaAux=0,flagInicio=0,contador=0,whileCon=0;
                 
                 rs = bd.consulta("select * from ruta_estacion where id_ruta="+rutaActual+";");
                 
@@ -378,28 +434,285 @@ public class Algoritmos {
                                 if(rs.getInt("id_estacion")==topeAux || rs.getInt("id_estacion")==partidaAux)
                                     contador++;
                                 
-                                estacionesRuta.add(rs.getInt("id_estacion"));
+                                if(i==0)
+                                    estacionesRuta.add(rs.getInt("id_estacion"));
+                                
+                                if(i>0 && whileCon>0)
+                                    estacionesRuta.add(rs.getInt("id_estacion"));
+                                
+                                whileCon++;
                             }
                         
                         if(contador==2)
                             break;
-                            
                     }
-
-                
                 estPartida = estTope;
             }
             
             
             for(int i=0;i<estacionesRuta.size();i++)
-                System.out.print(" "+estacionesRuta.get(i));        
-     
+                System.out.print(" "+estacionesRuta.get(i));
+            
+            int dimension = estacionesRuta.size()+1;
+            int[][] matrizCaminoRes = new int[dimension][dimension];
+            
+            int nodoAct=0,vecinoPost;
+            
+            //seteamos todo 0
+            for(int i=0;i<dimension;i++)
+            {
+                for(int j=0;j<dimension;j++)
+                    matrizCaminoRes[i][j]=0;
+            }
+            
+            //ponemos estaciones
+            for(int i=1;i<dimension;i++)
+            {
+                matrizCaminoRes[0][i]=estacionesRuta.get(i-1);
+                matrizCaminoRes[i][0]=estacionesRuta.get(i-1);
+            }
+            
+            for(int i=1;i<dimension;i++)
+            {
+                //nodoAct=estacionesRuta.get(i);
+                if(i<dimension-1)
+                {
+                    vecinoPost=estacionesRuta.get(i);
+                    for(int j=1;j<dimension;j++)
+                    {
+                        if(matrizCaminoRes[0][j]==vecinoPost)
+                            matrizCaminoRes[i][j]=1;
+                    }
+                }
+            }
+            System.out.print("\n");
+            
+            for(int i=0;i<dimension;i++)
+            {
+                for(int j=0;j<dimension;j++)
+                {
+                        System.out.print(matrizCaminoRes[i][j]);
+                }
+                
+                System.out.print("\n");
+            }
+            
+            return matrizCaminoRes;
         }else{
             System.out.println("Error en la conexión a la base de datos");
+            return null;
         }
     }
     
-    
+    public static int[] metodoPERT(int[][]grafo)
+    {
+        //encontrando la ruta inicial y la final
+        
+        int rutaInicial=0,rutaFinal=0,flagIni,flagFin,dimension=grafo.length;
+        
+        for(int i=0;i<dimension;i++)
+        {
+            flagIni=0;
+            flagFin=0;
+            
+            for(int j=0;j<dimension;j++)
+                {
+                    if(grafo[i][j]==1)
+                        flagFin=1;
+                    
+                    if(grafo[j][i]==1)
+                        flagIni=1;
+                }
+            
+            if(flagIni==0)
+                rutaInicial=grafo[0][i];
+            
+            if(flagFin==0)
+                rutaFinal=grafo[i][0];
+        }
+        
+       // System.out.println(rutaInicial);
+       // System.out.println(rutaFinal);
+        
+        //INICIA EL ALGORITMO DFS
+                    Stack<String> stack = new Stack<>();
+                    ArrayList<Integer> path = new ArrayList<>();
+                    ArrayList<Integer> pathOptimo = new ArrayList<>();
+                     ArrayList<Integer> next = new ArrayList<>();
+                    ArrayList<Integer> rutasGen = new ArrayList<>();
+                    int nodoActual=0,flagNext,contador=grafo.length;
+                    int contadorPath=0;
+                    
+                    stack.push(String.valueOf(rutaInicial));
+                    
+                    while(!stack.isEmpty()){
+                        flagNext=0;
+                        path.clear();
+                        rutasGen.clear();
+                        next.clear();
+                        String [] pathSave = stack.pop().split(",");
+                        
+                        for(int i=0;i<pathSave.length;i++)
+                            path.add(Integer.parseInt(pathSave[i]));
+                        
+                        
+                        nodoActual = path.get(path.size()-1);
+                    
+                        //se sacan los nodos vecinos SE HIZO MODIFICACION AQUÍ, REVISAR EN EL ORIGINAL
+                        for(int i=1;i<contador;i++)
+                            {
+                                if(grafo[i][0]==nodoActual)
+                                    {
+                                        for(int j=1;j<contador-1;j++)
+                                        {
+                                            if(grafo[i][j]>0)
+                                                next.add(grafo[0][j]);
+
+                                        }
+                                        i=contador;//igualamos al contador para que se salga del for
+                                    }
+                            }
+                        
+                        //se restan los nodos vecinos menos path
+                        if(!next.isEmpty())
+                        {
+                            //primero se encuentran los indices a remover
+                            for(int i=next.size()-1;i>=0;i--)
+                            {
+                                for(int j=0;j<path.size();j++)
+                                    {
+                                        if(Objects.equals(next.get(i), path.get(j)))
+                                        {
+                                            next.remove(i);
+                                            j=path.size();
+                                        }
+                                        
+                                        if(next.isEmpty())
+                                        {
+                                            j=path.size();
+                                            i=-1;
+                                            flagNext=1;
+                                        }
+                                    }
+                            }
+                        }
+                        else
+                            flagNext=1;
+                        
+                        //entra si el Arraylist next no esta vacio
+                        if(flagNext==0)
+                        {
+                            for(int i=0;i<next.size();i++)
+                            {   
+                                //if para ver si es el nodo de la ruta final y se crea el camino
+                                if(next.get(i)==rutaFinal)
+                                {
+                                    for(int j=0;j<path.size();j++)
+                                        rutasGen.add(path.get(j));
+                                   
+                                    
+                                    rutasGen.add(next.get(i));
+                                    
+                                    //System.out.println("\nCamino encontrado: \n");
+                                    int sumaPesos=0,nodoAnt=0,nodoSig=0;
+                                    
+                                   /* for(int x=0;x<rutasGen.size();x++)
+                                    {
+                                        System.out.print(rutasGen.get(x)+",");
+                                    }*/
+                                    
+                                    //obtenemos los pesos
+                                    for(int x=0;x<rutasGen.size();x++)
+                                    {
+                                        nodoAnt=rutasGen.get(x);
+                                        if(x!=rutasGen.size()-1)
+                                        {
+                                            nodoSig=rutasGen.get(x+1);
+                                            for(int y=0;y<contador;y++)
+                                            {
+                                                if(grafo[y][0]==nodoAnt)
+                                                    {
+                                                        for(int w=0;w<contador;w++)
+                                                            {
+                                                                if(grafo[0][w]==nodoSig)
+                                                                {
+                                                                    sumaPesos=sumaPesos+grafo[y][w];
+                                                                    w=contador;
+                                                                }
+                                                            }
+                                                        y=contador;
+                                                    }
+                                            }
+                                        }
+                                    }
+                                    
+                                    //System.out.print(" PEso: "+sumaPesos);
+                                    
+                                    if(contadorPath>0)
+                                    {
+                                        //System.out.println("A comparar: "+pathOptimo.get(pathOptimo.size()-1));
+                                        if(sumaPesos<pathOptimo.get(pathOptimo.size()-1))
+                                        {
+                                          //  System.out.println("Entra1");
+                                            pathOptimo.clear();
+                                            for(int x=0;x<rutasGen.size();x++)
+                                                pathOptimo.add(rutasGen.get(x));
+                                            pathOptimo.add(sumaPesos);
+                                        }
+                                        
+                                        /*System.out.println("Opt despues");
+                                        for(int p=0;p<pathOptimo.size();p++)
+                                            System.out.print(" "+pathOptimo.get(i));*/
+                                    }
+                                    else
+                                    {
+                                        for(int x=0;x<rutasGen.size();x++)
+                                            pathOptimo.add(rutasGen.get(x));
+                                        pathOptimo.add(sumaPesos);
+                                        
+                                       /* System.out.println("Opt despues2");
+                                        for(int p=0;p<pathOptimo.size();p++)
+                                            System.out.print(" "+pathOptimo.get(i));*/
+                                    }
+                                    
+                                    contador++;
+                                    contadorPath++;
+                                }
+                                else
+                                {
+                                    String pathAux="";
+                                    
+                                    for(int j=0;j<path.size();j++)
+                                        pathAux=pathAux+String.valueOf(path.get(j))+",";
+                                    
+                                    pathAux=pathAux+String.valueOf(next.get(i));
+                                    stack.push(pathAux);
+                                }
+                            }
+                        }
+                        
+                    }
+                    /*
+                   System.out.println("Optimo : \n");
+                    for(int x=0;x<pathOptimo.size();x++)
+                        {
+                            System.out.print(pathOptimo.get(x)+",");
+                        }*/
+                    
+                    if(!pathOptimo.isEmpty())
+                    {
+                        int[]resultado=new int[pathOptimo.size()];
+
+                        for(int x=0;x<pathOptimo.size();x++)
+                            {
+                                resultado[x]=pathOptimo.get(x);
+                            }
+                        
+                        return resultado;
+                    }
+                    else 
+                        return null;
+    }
     
     public static void generaViajesUnidad(int ruta) throws Exception{
         if(bd.conecta()){
@@ -605,7 +918,36 @@ public class Algoritmos {
             //obtieneUnidadesMinimas(8);
             //Dijkstra d = new Dijkstra();
             
-            generaRutasTransbordos(96, 57);
+            //generaRutasTransbordos(96, 57);
+            int[][]camino = new int[4][4];
+            
+            camino[0][0]=0;
+            camino[0][1]=6;
+            camino[0][2]=7;
+            camino[0][3]=5;
+            
+            camino[1][0]=6;
+            camino[1][1]=0;
+            camino[1][2]=1;
+            camino[1][3]=0;
+            
+            camino[2][0]=7;
+            camino[2][1]=0;
+            camino[2][2]=0;
+            camino[2][3]=0;
+            
+            camino[3][0]=5;
+            camino[3][1]=1;
+            camino[3][2]=1;
+            camino[3][3]=0;
+            
+            int[]res = metodoPERT(camino);
+            
+            for(int i=0;i<res.length;i++)
+                System.out.print(" "+res[i]);
+            
+            System.out.println();
+            //generaRutasTransbordos(51,77,1);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
