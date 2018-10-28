@@ -13,7 +13,7 @@ import java.util.Random;
 import java.util.Stack;
 
 public class Algoritmos {
-    private static Conexion bd = new Conexion("tt", "root", "n0m3l0");
+    private static Conexion bd = new Conexion("tt", "root", "b3nj4m1n");
     private static ResultSet rs;
     
     public static void reduceGrafoATransbordos() throws SQLException{
@@ -290,11 +290,11 @@ public class Algoritmos {
                                 System.out.print("\n");
                             }
                      
-                  //  return matrizResultado;
+                    return matrizResultado;
                 } catch (IOException e) {
 
                         e.printStackTrace();
-                     //   return null;
+                       return null;
                 } finally {
 
                         try {
@@ -312,7 +312,7 @@ public class Algoritmos {
                 }
         }else{
             System.out.println("Error en la conexión a la base de datos");
-          //  return null;
+            return null;
         }
     }
     
@@ -337,7 +337,7 @@ public class Algoritmos {
             ArrayList<Integer> camino = new ArrayList<>();
             camino.clear();
             
-            for(int i=1;i<path.length-1;i++)
+            for(int i=0;i<path.length-1;i++)
                 camino.add(path[i]);
             
 

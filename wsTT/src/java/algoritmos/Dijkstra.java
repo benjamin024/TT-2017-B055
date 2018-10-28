@@ -1,21 +1,48 @@
 package algoritmos;
 
+import java.sql.ResultSet;
+
 
 public class Dijkstra { 
 
 	private static final int SIN_PADRE = -1; 
         static String ruta = "";
-
+        private static Conexion bd = new Conexion("tt", "root", "b3nj4m1n");
+        private static ResultSet rs;
+        
+        private static int indexOf(int[] array, int value){
+            int index = -1;
+            for(int i = 0; i < array.length; i++){
+                if(array[i] == value)
+                    index = i;
+            }
+            return index;
+        }
 	
-	public static int[] dijkstra(int[][] grafo, int inicio, int destino) 
+	public static int[] dijkstra(int[][] grafo, int inicio, int destino) throws Exception
 	{ 
 		int nVertices = grafo[0].length - 1; 
+                bd.conecta();
+                rs = bd.consulta("SELECT id_ruta FROM ruta_estacion WHERE id_estacion= "+inicio);
+                rs.next();
+                inicio = rs.getInt("id_ruta");
+                
+
+                //obtenemos el id_ruta de la estacion de final
+                rs = bd.consulta("SELECT id_ruta FROM ruta_estacion WHERE id_estacion= "+destino);
+                rs.next();
+                destino=rs.getInt("id_ruta");
+                
+                
                 
                 int[] rutas = new int[nVertices];
                 
                 for(int x = 1; x <= nVertices; x++){
                     rutas[x-1] = grafo[0][x];
                 }
+                
+                inicio = indexOf(rutas, inicio);
+                destino = indexOf(rutas, destino);
                 
                 int grafoN[][] = new int[nVertices][nVertices];
                 for(int x = 1; x <= nVertices; x++){
@@ -112,35 +139,6 @@ public class Dijkstra {
 		imprimeRuta(padres[currentVertex], padres, rutas); 
                 System.out.print(rutas[currentVertex] + " ");
 		ruta += rutas[currentVertex] + " "; 
-	} 
-
-		// Driver Code 
-	public static void main(String[] args) 
-	{ 
-	/*	
-            int[][] grafo = { { 0, 4, 0, 0, 0, 0, 0, 8, 0 }, 
-                                            { 4, 0, 8, 0, 0, 0, 0, 11, 0 }, 
-                                            { 0, 8, 0, 7, 0, 4, 0, 0, 2 }, 
-                                            { 0, 0, 7, 0, 9, 14, 0, 0, 0 }, 
-                                            { 0, 0, 0, 9, 0, 10, 0, 0, 0 }, 
-                                            { 0, 0, 4, 0, 10, 0, 2, 0, 0 }, 
-                                            { 0, 0, 0, 14, 0, 2, 0, 1, 6 }, 
-                                            { 8, 11, 0, 0, 0, 0, 1, 0, 7 }, 
-                                            { 0, 0, 2, 0, 0, 0, 6, 7, 0 } }; */
-            int[][] grafo = {
-                                {0,5,6,7,8},
-                                {5,0,1,1,0},
-                                {6,0,0,1,0},
-                                {7,0,0,0,0},
-                                {8,0,0,0,0}
-                            };
-        
-		int[] x = dijkstra(grafo, 0, 2); 
-                System.out.println("");
-                for(int xx : x){
-                    System.out.print(xx + " ");
-                }
-                System.out.println("");
-	} 
+	}
 } 
 

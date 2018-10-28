@@ -1,9 +1,7 @@
 package planificador;
 
 import algoritmos.*;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 public class Planificador {
@@ -27,7 +25,7 @@ public class Planificador {
         return indices;
     }
     
-    int[][] planificadorUsuarios(int operacion, int estacion_inicial, int estacion_final) throws Exception{
+    public int[][] planificadorUsuarios(int operacion, int estacion_inicial, int estacion_final) throws Exception{
         //Se reduce 
         a.reduceGrafoATransbordos();
         //Se obtienen los caminos (hacer que el método regrese int[][]
@@ -36,11 +34,15 @@ public class Planificador {
         //Se ejecutan los algoritmos de optimizacion
         Dijkstra dk = new Dijkstra();
         int[] resDk = dk.dijkstra(grafoCaminos, estacion_inicial, estacion_final);
-        int[] resP = a.metodoPERT(grafoCaminos);
+        System.out.println("");
+        //int[] resP = a.metodoPERT(grafoCaminos);
+        /*System.out.println("PERT "+resP.length);
+        for(int i = 0;i<resP.length;i++)
+            System.out.print(" "+resP[i]);*/
            
         ArrayList<Integer> resultados_algoritmos = new ArrayList<>();
         resultados_algoritmos.add(resDk[resDk.length - 1]);
-        resultados_algoritmos.add(resP[resP.length - 1]);
+        //resultados_algoritmos.add(resP[resP.length - 1]);
         
         //Elegimos el resultado que más nos conviene dependiendo el resultado
         int valorMin = 999;
@@ -60,7 +62,7 @@ public class Planificador {
                     camino = resDk;
                     break;
                 case 1:
-                    camino = resP;
+                    //camino = resP;
                     break;
             }
         }else{ //Más de un algoritmo tiene el resultado menor
@@ -74,7 +76,7 @@ public class Planificador {
                         auxNumNod = resDk.length - 1;
                         break;
                     case 1:
-                        auxNumNod = resP.length - 1;
+                        //auxNumNod = resP.length - 1;
                         break;
                 }
                 if(auxNumNod < numNodMin){
@@ -87,23 +89,39 @@ public class Planificador {
                     camino = resDk;
                     break;
                 case 1:
-                    camino = resP;
+                    //camino = resP;
                     break;
             }
         }
         
+        System.out.println("\n\nCAMINO");
+        for(int i = 0; i < camino.length; i++){
+            System.out.print(camino[i] + " ");
+        }
+        System.out.println("\n\n");
         //Expandemos grafo
         int[][] grafoResultado = a.generaViajeCompleto(estacion_inicial, estacion_final, camino);
-        return grafoResuelto;
+        return grafoResultado;
     }
     
-    int planificadorAdministrador(int operacion, int ruta){
+    public int planificadorAdministrador(int operacion, int ruta) throws Exception{
         if(operacion == 1){ //optimizar frecuencia
             
         }else{ //Optimizar número de unidades
             int numMin = a.obtieneUnidadesMinimas(ruta);
         }
-        return null;
+        return 0;
     }
-*/
+    
+    public static void main(String[] args) throws Exception {
+        Planificador p = new Planificador();
+        int[][] resultado = p.planificadorUsuarios(0, 51, 92);
+        for(int i = 0; i < resultado.length; i++){
+            for(int j = 0; j < resultado.length; j++){
+                System.out.print(resultado[i][j]);
+            }
+            System.out.println("");
+        }
+    }
+
 }
