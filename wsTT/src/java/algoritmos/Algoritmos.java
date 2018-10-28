@@ -72,7 +72,7 @@ public class Algoritmos {
         }
     }
     
-    public static /*int[][]*/ void generaRutasTransbordos(int estacionInicial, int estacionFinal,int operacion) throws SQLException{
+    public static int[][] generaRutasTransbordos(int estacionInicial, int estacionFinal,int operacion) throws SQLException{
         if(bd.conecta()){
             String FILENAME = "grafo_transbordos.info";
             //String FILENAME = "D:\\Luis R\\Documents\\TT1\\algoritmos\\matriz.txt";
@@ -330,18 +330,18 @@ public class Algoritmos {
         }
     }
     
-    public static int[][] generaViajeCompleto(int estacionInicial, int estacionFinal,int[][]path) throws SQLException{
+    public static int[][] generaViajeCompleto(int estacionInicial, int estacionFinal,int[]path) throws SQLException{
         if(bd.conecta()){
             
-            int rutaInicial=0, rutaFinal=0,nodoAnterior,nodoSiguiente,auxValueAnt,auxValueSig,valueNodo;
+            int rutaInicial=0, rutaFinal=0;//,nodoAnterior,nodoSiguiente,auxValueAnt,auxValueSig,valueNodo;
             ArrayList<Integer> camino = new ArrayList<>();
             camino.clear();
             
-            for(int i=1;i<path.length;i++)
-                camino.add(path[0][i]);
+            for(int i=1;i<path.length-1;i++)
+                camino.add(path[i]);
             
 
-            for(int i=1;i<path.length;i++)
+            /*for(int i=1;i<path.length;i++)
             {
                 //camino.add();
                 nodoAnterior=0;
@@ -378,7 +378,7 @@ public class Algoritmos {
                             }
                     }
                 }
-            }
+            }*/
             
             for(int i=0;i<camino.size();i++)
                 System.out.print(" "+camino.get(i));
