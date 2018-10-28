@@ -1,13 +1,13 @@
 package algoritmos;
 
 
-class Dijkstra { 
+public class Dijkstra { 
 
 	private static final int SIN_PADRE = -1; 
         static String ruta = "";
 
 	
-	private static int[] dijkstra(int[][] grafo, int inicio, int destino) 
+	public static int[] dijkstra(int[][] grafo, int inicio, int destino) 
 	{ 
 		int nVertices = grafo[0].length - 1; 
                 

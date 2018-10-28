@@ -72,7 +72,7 @@ public class Algoritmos {
         }
     }
     
-    public static /*int[][]*/ void generaRutasTransbordos(int estacionInicial, int estacionFinal,int operacion) throws SQLException{
+    public static int[][] generaRutasTransbordos(int estacionInicial, int estacionFinal,int operacion) throws SQLException{
         if(bd.conecta()){
             String FILENAME = "grafo_transbordos.info";
             //String FILENAME = "D:\\Luis R\\Documents\\TT1\\algoritmos\\matriz.txt";
@@ -319,7 +319,7 @@ public class Algoritmos {
         public static void calculaFrecuencia(int ruta,int sentido) throws SQLException{
         if(bd.conecta()){
             int flujo=0;
-            rs = bd.consulta("select r.id_estacion from ruta_estacion r join ruta_estacion e on r.id_estacion=e.id_estacion where r.id_ruta="+rutaActual+" and e.id_ruta="+rutaSiguiente+" group by r.id_estacion;");
+            //rs = bd.consulta("select r.id_estacion from ruta_estacion r join ruta_estacion e on r.id_estacion=e.id_estacion where r.id_ruta="+rutaActual+" and e.id_ruta="+rutaSiguiente+" group by r.id_estacion;");
             while(rs.next()){
                 flujo=flujo+rs.getInt("id_estacion");
                 break;
