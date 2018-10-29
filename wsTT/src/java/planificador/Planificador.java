@@ -35,7 +35,10 @@ public class Planificador {
         Dijkstra dk = new Dijkstra();
         int[] resDk = dk.dijkstra(grafoCaminos, estacion_inicial, estacion_final);
         
-        int[] resP = a.metodoPERT(grafoCaminos);
+        int[] resP = a.metodoPERT(grafoCaminos,estacion_inicial,estacion_final);
+        System.out.println("PERT "+resP.length);
+        for(int i = 0;i<resP.length;i++)
+            System.out.print(" "+resP[i]);
         
         FloydWarshall fw = new FloydWarshall();
         int[] resFW = fw.FloydWarshall(grafoCaminos, estacion_inicial, estacion_final);

@@ -530,7 +530,7 @@ public class Algoritmos {
         if(bd.conecta())
         {
             
-            int rutaInicial=0,rutaFinal=0,flagIni,flagFin,dimension=grafo.length;
+            int rutaInicial=0,rutaFinal=0;
             rs = bd.consulta("SELECT id_ruta FROM ruta_estacion WHERE id_estacion= "+estacion_ini);
             while(rs.next()){
                 rutaInicial=rs.getInt("id_ruta");
