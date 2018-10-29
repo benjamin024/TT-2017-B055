@@ -13,7 +13,7 @@ import java.util.Random;
 import java.util.Stack;
 
 public class Algoritmos {
-    private static Conexion bd = new Conexion("tt", "root", "b3nj4m1n");
+    private static Conexion bd = new Conexion("tt", "root", "n0m3l0");
     private static ResultSet rs;
     
     public static void reduceGrafoATransbordos() throws SQLException{
@@ -392,10 +392,13 @@ public class Algoritmos {
             
             int rutaActual=0,rutaSiguiente=0,estPartida=estacionInicial,estTope=0;
             ArrayList<Integer> estacionesRuta = new ArrayList<>();
+            ArrayList<Integer> estacionesRutaDesc = new ArrayList<>();
 
             for(int i=0;i<camino.size();i++)
             {
                 rutaActual=camino.get(i);
+                estacionesRutaDesc.clear();
+                int flagDesc=0;
                 
                 if(i!=camino.size()-1)
                     {
@@ -409,6 +412,8 @@ public class Algoritmos {
                     }
                 else
                     estTope=estacionFinal;
+                
+                System.out.println("La final "+estTope+"\n");
 
                 int topeAux=0,partidaAux=0,flagInicio=0,contador=0,whileCon=0;
                 
@@ -420,6 +425,7 @@ public class Algoritmos {
                             flagInicio=1;
                             topeAux=estTope;
                             partidaAux=estPartida;
+                            flagDesc=0;
                         }
                     
                         if(rs.getInt("id_estacion")==estTope && flagInicio!=1)
@@ -427,6 +433,7 @@ public class Algoritmos {
                             flagInicio=1;
                             topeAux=estPartida;
                             partidaAux=estTope;
+                            flagDesc=1;
                         }
                         
                         if(flagInicio==1)
@@ -434,11 +441,18 @@ public class Algoritmos {
                                 if(rs.getInt("id_estacion")==topeAux || rs.getInt("id_estacion")==partidaAux)
                                     contador++;
                                 
-                                if(i==0)
-                                    estacionesRuta.add(rs.getInt("id_estacion"));
-                                
-                                if(i>0 && whileCon>0)
-                                    estacionesRuta.add(rs.getInt("id_estacion"));
+                                if(flagDesc==0)
+                                {
+                                    if(i==0)
+                                        estacionesRuta.add(rs.getInt("id_estacion"));
+
+                                    if(i>0 && whileCon>0)
+                                        estacionesRuta.add(rs.getInt("id_estacion"));
+                                }
+                                else
+                                {
+                                    estacionesRutaDesc.add(rs.getInt("id_estacion"));
+                                }
                                 
                                 whileCon++;
                             }
@@ -446,6 +460,12 @@ public class Algoritmos {
                         if(contador==2)
                             break;
                     }
+                if(flagDesc==1)
+                        {
+                            estacionesRutaDesc.remove(estacionesRutaDesc.size()-1);
+                            for(int t=estacionesRutaDesc.size()-1;t>=0;t--)
+                                estacionesRuta.add(estacionesRutaDesc.get(t));
+                        }
                 estPartida = estTope;
             }
             
@@ -504,13 +524,24 @@ public class Algoritmos {
         }
     }
     
-    public static int[] metodoPERT(int[][]grafo)
+    public static int[] metodoPERT(int[][]grafo,int estacion_ini,int estacion_fin) throws SQLException
     {
         //encontrando la ruta inicial y la final
-        
-        int rutaInicial=0,rutaFinal=0,flagIni,flagFin,dimension=grafo.length;
-        
-        for(int i=0;i<dimension;i++)
+        if(bd.conecta())
+        {
+            
+            int rutaInicial=0,rutaFinal=0,flagIni,flagFin,dimension=grafo.length;
+            rs = bd.consulta("SELECT id_ruta FROM ruta_estacion WHERE id_estacion= "+estacion_ini);
+            while(rs.next()){
+                rutaInicial=rs.getInt("id_ruta");
+            }
+            
+            //obtenemos el id_ruta de la estacion de final
+            rs = bd.consulta("SELECT id_ruta FROM ruta_estacion WHERE id_estacion= "+estacion_fin);
+            while(rs.next()){
+                rutaFinal=rs.getInt("id_ruta");
+            }
+        /*for(int i=0;i<dimension;i++)
         {
             flagIni=0;
             flagFin=0;
@@ -529,10 +560,10 @@ public class Algoritmos {
             
             if(flagFin==0)
                 rutaFinal=grafo[i][0];
-        }
+        }*/
         
-       // System.out.println(rutaInicial);
-       // System.out.println(rutaFinal);
+        System.out.println(rutaInicial);
+        System.out.println(rutaFinal);
         
         //INICIA EL ALGORITMO DFS
                     Stack<String> stack = new Stack<>();
@@ -712,6 +743,12 @@ public class Algoritmos {
                     }
                     else 
                         return null;
+        }
+        else
+        {
+            System.out.println("No se pudo conectar a la base");
+            return null;
+        }
     }
     
     public static void generaViajesUnidad(int ruta) throws Exception{
@@ -919,7 +956,7 @@ public class Algoritmos {
             //Dijkstra d = new Dijkstra();
             
             //generaRutasTransbordos(96, 57);
-            int[][]camino = new int[4][4];
+           /* int[][]camino = new int[4][4];
             
             camino[0][0]=0;
             camino[0][1]=6;
@@ -946,7 +983,12 @@ public class Algoritmos {
             for(int i=0;i<res.length;i++)
                 System.out.print(" "+res[i]);
             
-            System.out.println();
+            System.out.println();*/
+           int[][] grafoCaminos = generaRutasTransbordos(51, 92, 0);
+           int[] resP = metodoPERT(grafoCaminos,51,92);
+           System.out.println("PERT "+resP.length);
+            for(int i = 0;i<resP.length;i++)
+                System.out.print(" "+resP[i]);
             //generaRutasTransbordos(51,77,1);
         } catch (Exception ex) {
             ex.printStackTrace();
