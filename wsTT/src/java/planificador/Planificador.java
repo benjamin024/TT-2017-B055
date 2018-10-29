@@ -34,15 +34,16 @@ public class Planificador {
         //Se ejecutan los algoritmos de optimizacion
         Dijkstra dk = new Dijkstra();
         int[] resDk = dk.dijkstra(grafoCaminos, estacion_inicial, estacion_final);
-        System.out.println("");
-        //int[] resP = a.metodoPERT(grafoCaminos);
-        /*System.out.println("PERT "+resP.length);
-        for(int i = 0;i<resP.length;i++)
-            System.out.print(" "+resP[i]);*/
+        
+        int[] resP = a.metodoPERT(grafoCaminos);
+        
+        FloydWarshall fw = new FloydWarshall();
+        int[] resFW = fw.FloydWarshall(grafoCaminos, estacion_inicial, estacion_final);
            
         ArrayList<Integer> resultados_algoritmos = new ArrayList<>();
         resultados_algoritmos.add(resDk[resDk.length - 1]);
-        //resultados_algoritmos.add(resP[resP.length - 1]);
+        resultados_algoritmos.add(resP[resP.length - 1]);
+        resultados_algoritmos.add(resFW[resFW.length - 1]);
         
         //Elegimos el resultado que más nos conviene dependiendo el resultado
         int valorMin = 999;
@@ -51,7 +52,7 @@ public class Planificador {
                 valorMin = res;
         }
         
-        int[] camino = null;
+        int[] camino = {};
         
         int resIguales = Collections.frequency(resultados_algoritmos, valorMin);
         
@@ -62,7 +63,10 @@ public class Planificador {
                     camino = resDk;
                     break;
                 case 1:
-                    //camino = resP;
+                    camino = resP;
+                    break;
+                case 2:
+                    camino = resFW;
                     break;
             }
         }else{ //Más de un algoritmo tiene el resultado menor
@@ -76,7 +80,10 @@ public class Planificador {
                         auxNumNod = resDk.length - 1;
                         break;
                     case 1:
-                        //auxNumNod = resP.length - 1;
+                        auxNumNod = resP.length - 1;
+                        break;
+                    case 2:
+                        camino = resFW;
                         break;
                 }
                 if(auxNumNod < numNodMin){
@@ -89,7 +96,10 @@ public class Planificador {
                     camino = resDk;
                     break;
                 case 1:
-                    //camino = resP;
+                    camino = resP;
+                    break;
+                case 2:
+                    camino = resFW;
                     break;
             }
         }
