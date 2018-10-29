@@ -330,7 +330,7 @@ public class Algoritmos {
         }
     }
     
-    public static int[][] generaViajeCompleto(int estacionInicial, int estacionFinal,int[]path) throws SQLException{
+    public static int[]generaViajeCompleto(int estacionInicial, int estacionFinal,int[]path) throws SQLException{
         if(bd.conecta()){
             
             int rutaInicial=0, rutaFinal=0;//,nodoAnterior,nodoSiguiente,auxValueAnt,auxValueSig,valueNodo;
@@ -380,15 +380,15 @@ public class Algoritmos {
                 }
             }*/
             
-            for(int i=0;i<camino.size();i++)
-                System.out.print(" "+camino.get(i));
+          /*  for(int i=0;i<camino.size();i++)
+                System.out.print(" "+camino.get(i));*/
             
-            System.out.print("\n");
+         //   System.out.print("\n");
             rutaInicial=camino.get(0);
 
             rutaFinal=camino.get(camino.size()-1);
-            System.out.println("Inicial: "+rutaInicial);
-            System.out.println("Final: "+rutaFinal);
+           // System.out.println("Inicial: "+rutaInicial);
+            //System.out.println("Final: "+rutaFinal);
             
             int rutaActual=0,rutaSiguiente=0,estPartida=estacionInicial,estTope=0;
             ArrayList<Integer> estacionesRuta = new ArrayList<>();
@@ -413,7 +413,7 @@ public class Algoritmos {
                 else
                     estTope=estacionFinal;
                 
-                System.out.println("La final "+estTope+"\n");
+               // System.out.println("La final "+estTope+"\n");
 
                 int topeAux=0,partidaAux=0,flagInicio=0,contador=0,whileCon=0;
                 
@@ -473,13 +473,16 @@ public class Algoritmos {
             for(int i=0;i<estacionesRuta.size();i++)
                 System.out.print(" "+estacionesRuta.get(i));
             
-            int dimension = estacionesRuta.size()+1;
-            int[][] matrizCaminoRes = new int[dimension][dimension];
+            int dimension = estacionesRuta.size();
+            int[] matrizCaminoRes = new int[dimension];
+            
+            for(int i=0;i<dimension;i++)
+                matrizCaminoRes[i]=estacionesRuta.get(i);
             
             int nodoAct=0,vecinoPost;
             
             //seteamos todo 0
-            for(int i=0;i<dimension;i++)
+           /* for(int i=0;i<dimension;i++)
             {
                 for(int j=0;j<dimension;j++)
                     matrizCaminoRes[i][j]=0;
@@ -515,7 +518,7 @@ public class Algoritmos {
                 }
                 
                 System.out.print("\n");
-            }
+            }*/
             
             return matrizCaminoRes;
         }else{
@@ -561,9 +564,6 @@ public class Algoritmos {
             if(flagFin==0)
                 rutaFinal=grafo[i][0];
         }*/
-        
-        System.out.println(rutaInicial);
-        System.out.println(rutaFinal);
         
         //INICIA EL ALGORITMO DFS
                     Stack<String> stack = new Stack<>();

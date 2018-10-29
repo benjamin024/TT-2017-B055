@@ -25,7 +25,7 @@ public class Planificador {
         return indices;
     }
     
-    public int[][] planificadorUsuarios(int operacion, int estacion_inicial, int estacion_final) throws Exception{
+    public int[] planificadorUsuarios(int operacion, int estacion_inicial, int estacion_final) throws Exception{
         //Se reduce 
         a.reduceGrafoATransbordos();
         //Se obtienen los caminos (hacer que el método regrese int[][]
@@ -36,6 +36,7 @@ public class Planificador {
         int[] resDk = dk.dijkstra(grafoCaminos, estacion_inicial, estacion_final);
         
         int[] resP = a.metodoPERT(grafoCaminos,estacion_inicial,estacion_final);
+        System.out.println();
         System.out.println("PERT "+resP.length);
         for(int i = 0;i<resP.length;i++)
             System.out.print(" "+resP[i]);
@@ -113,7 +114,7 @@ public class Planificador {
         }
         System.out.println("\n\n");
         //Expandemos grafo
-        int[][] grafoResultado = a.generaViajeCompleto(estacion_inicial, estacion_final, camino);
+        int[] grafoResultado = a.generaViajeCompleto(estacion_inicial, estacion_final, camino);
         return grafoResultado;
     }
     
@@ -128,13 +129,15 @@ public class Planificador {
     
     public static void main(String[] args) throws Exception {
         Planificador p = new Planificador();
-        int[][] resultado = p.planificadorUsuarios(0, 51, 92);
+        int[] resultado = p.planificadorUsuarios(0, 51, 92);
+        System.out.println("");
+        System.out.println("");
         for(int i = 0; i < resultado.length; i++){
-            for(int j = 0; j < resultado.length; j++){
-                System.out.print(resultado[i][j]);
-            }
-            System.out.println("");
+                System.out.print(resultado[i]+" ");
+            
+            
         }
+        System.out.println("");
     }
 
 }
