@@ -35,7 +35,8 @@ public class Planificador {
         Dijkstra dk = new Dijkstra();
         int[] resDk = dk.dijkstra(grafoCaminos, estacion_inicial, estacion_final);
         
-        int[] resP = a.metodoPERT(grafoCaminos,estacion_inicial,estacion_final);
+        PERT p = new PERT();
+        int[] resP = p.metodoPERT(grafoCaminos,estacion_inicial,estacion_final);
         System.out.println();
         System.out.println("PERT "+resP.length);
         for(int i = 0;i<resP.length;i++)

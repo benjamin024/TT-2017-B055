@@ -124,7 +124,6 @@ public class FloydWarshall
             }
         }
  
-        // Print the shortest ruta between all pairs of vertices
         imprimeSolucion(costo, ruta, inicio, destino);
         
         String[] rutaux = rutaS.split(" ");
