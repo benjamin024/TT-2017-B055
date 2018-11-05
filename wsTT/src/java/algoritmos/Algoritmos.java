@@ -1006,7 +1006,7 @@ public class Algoritmos {
             System.out.println();*/
            //int[][] grafoCaminos = generaRutasTransbordos(51, 92, 0);
            //calculaFrecuencia(8,1);
-           ArrayList<String> unid=tiemposEstimados(112);
+           ArrayList unid=tiemposEstimados(112);
            //int[] resP = metodoPERT(grafoCaminos,51,92);
            //System.out.println("PERT "+resP.length);
             //for(int i = 0;i<resP.length;i++)

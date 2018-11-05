@@ -5,6 +5,7 @@
  */
 package metodos;
 
+import algoritmos.Algoritmos;
 import com.google.gson.Gson;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
@@ -1498,4 +1499,31 @@ public class bdActions {
             return resM;
         }
     
+    @WebMethod(operationName = "tiemEst")
+    public ArrayList tiempEst(@WebParam(name = "est") int estacion) {
+        ArrayList res = new ArrayList();
+        try{
+               Algoritmos a=new Algoritmos();
+               res = a.tiemposEstimados(estacion);
+                
+            }
+         catch(Exception e){
+             System.out.println(e);
+             return null;}
+
+            return res;
+        }
+    
+    @WebMethod(operationName = "frecuencia")
+    public int calFrecuencia(@WebParam(name = "rut") int ruta,@WebParam(name = "sent") int sentido) {
+        try{
+               Algoritmos a=new Algoritmos();
+               resM = a.calculaFrecuencia(ruta,sentido);
+            }
+         catch(Exception e){
+             System.out.println(e);
+             resM=-1;}
+
+            return resM;
+        }
 }
