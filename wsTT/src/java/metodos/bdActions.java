@@ -96,14 +96,14 @@ public class bdActions {
     }
     
     @WebMethod(operationName = "insRuta")  //falta validar que no exista duplicidad, formato de cada dato
-    public int insRuta(@WebParam(name="nom")String nombre,@WebParam(name="comb")float combustible,@WebParam(name="fCob")String forCobro,@WebParam(name="col")String color,@WebParam(name="frec")int frecuencia)
+    public int insRuta(@WebParam(name="nom")String nombre,@WebParam(name="comb")float combustible,@WebParam(name="fCob")String forCobro,@WebParam(name="col")String color,@WebParam(name="frecIda")int frecuenciaIda,@WebParam(name="frecVuel")int frecuenciaVuelta,@WebParam(name="tiemRec")int tiempoRecorrido)
         {
             try{
                 
                 if(Conecta()==0)
                     throw new Exception();
 
-                resulIns=stmt.executeUpdate("insert into ruta(nombre,combustible,id_forma_cobro,color,frecuencia) values('"+nombre+"',"+combustible+",'"+forCobro+"','"+color+"',"+frecuencia+")");
+                resulIns=stmt.executeUpdate("insert into ruta(nombre,combustible,id_forma_cobro,color,frecuencia_ida,frecuencia_vuelta,tiempo_recorrido) values('"+nombre+"',"+combustible+",'"+forCobro+"','"+color+"',"+frecuenciaIda+","+frecuenciaVuelta+","+tiempoRecorrido+")");
                 if(resulIns>0){
                     resM=1;
                     conn.close();
@@ -354,7 +354,7 @@ public class bdActions {
         }
     
     @WebMethod(operationName = "insViajeUnidad")  //Falta validar duplicidad
-    public int insViajeUnidad(@WebParam(name = "idUni") String idUnidad,@WebParam(name = "rfcCon") String rfcConductor,@WebParam(name = "fec") String fecha,@WebParam(name = "hSal") String horaSalida,@WebParam(name = "hTer") String horaTermino)
+    public int insViajeUnidad(@WebParam(name = "idUni") String idUnidad,@WebParam(name = "rfcCon") String rfcConductor,@WebParam(name = "fec") String fecha,@WebParam(name = "hSal") String horaSalida,@WebParam(name = "hTer") String horaTermino,@WebParam(name = "totPas") int totalPasajeros,@WebParam(name = "dir") int direccion)
         {
             DateFormat formatter = new SimpleDateFormat("HH:mm");
             try{
@@ -364,7 +364,7 @@ public class bdActions {
                 java.sql.Time timeValue = new java.sql.Time(formatter.parse(horaSalida).getTime());
                 java.sql.Time timeValue2 = new java.sql.Time(formatter.parse(horaTermino).getTime());
                 
-                resulIns=stmt.executeUpdate("insert into viaje_unidad(id_unidad,rfc_conductor,fecha,hora_salida,hora_termino) values('"+idUnidad+"','"+rfcConductor+"','"+fecha+"','"+timeValue+"','"+timeValue2+"')");
+                resulIns=stmt.executeUpdate("insert into viaje_unidad(id_unidad,rfc_conductor,fecha,hora_salida,hora_termino,total_pasajeros,direccion) values('"+idUnidad+"','"+rfcConductor+"','"+fecha+"','"+timeValue+"','"+timeValue2+"',"+totalPasajeros+","+direccion+")");
                 if(resulIns>0){
                     resM=1;
                     conn.close();
@@ -404,7 +404,7 @@ public class bdActions {
             return resM;
         }
     
-    @WebMethod(operationName = "insViajeUsuario")  //Falta validar duplicidad,formato de fecha hora
+   /* @WebMethod(operationName = "insViajeUsuario")  //Falta validar duplicidad,formato de fecha hora
     public int insViajeUsuario(@WebParam(name = "fecHor") String fechaHora,@WebParam(name = "corrUsu") String correoUsuario)
         {
      
@@ -427,7 +427,7 @@ public class bdActions {
              resM=0;}
 
             return resM;
-        }
+        }*/
     
     @WebMethod(operationName = "insUsuario",action="http://metodos/insUsuario")  //Falta validar duplicidad
     public int insUsuario(@WebParam(name = "corrUsu") String correoUsuario,@WebParam(name = "nom") String nombre,@WebParam(name = "pass") String password,@WebParam(name = "tip") int tipo, @WebParam(name = "noTar") String noTarjeta)
@@ -546,14 +546,14 @@ public class bdActions {
     }
     
     @WebMethod(operationName = "altRuta")  //falta validar que no exista duplicidad, formato de cada dato
-    public int altRuta(@WebParam(name = "idRu") int idRuta,@WebParam(name="nom")String nombre,@WebParam(name="comb")float combustible,@WebParam(name="fCob")int forCobro,@WebParam(name="col")String color,@WebParam(name="frec")int frecuencia)
+    public int altRuta(@WebParam(name = "idRu") int idRuta,@WebParam(name="nom")String nombre,@WebParam(name="comb")float combustible,@WebParam(name="fCob")int forCobro,@WebParam(name="col")String color,@WebParam(name="frecIda")int frecuenciaIda,@WebParam(name="frecVuel")int frecuenciaVuelta,@WebParam(name="tiemRec")int tiempoRecorrido)
         {
             try{
                 
                 if(Conecta()==0)
                     throw new Exception();
 
-                resulIns=stmt.executeUpdate("update ruta set nombre='"+nombre+"',combustible='"+combustible+"',id_forma_cobro='"+forCobro+"',color='"+color+"',frecuencia='"+frecuencia+"' where id_ruta='"+idRuta+"'");
+                resulIns=stmt.executeUpdate("update ruta set nombre='"+nombre+"',combustible='"+combustible+"',id_forma_cobro='"+forCobro+"',color='"+color+"',frecuencia_ida='"+frecuenciaIda+"',frecuencia_vuelta='"+frecuenciaVuelta+"',tiempo_recorrido='"+tiempoRecorrido+"' where id_ruta='"+idRuta+"'");
                 if(resulIns>0){
                     resM=1;
                     conn.close();
@@ -780,7 +780,7 @@ public class bdActions {
 
             return resM;
         }
-    
+    /*
     @WebMethod(operationName = "altViajeUsuEst")  //Falta validar duplicidad
     public int altViajeUsuEst(@WebParam(name = "idViaUsu") int idViajeUsuario,@WebParam(name = "idEst") int idEstacion,@WebParam(name = "noEst") int noEstacion)
         {
@@ -801,10 +801,10 @@ public class bdActions {
              resM=0;}
 
             return resM;
-        }
+        }*/
     
     @WebMethod(operationName = "altViajeUnidad")  //Falta validar duplicidad
-    public int altViajeUnidad(@WebParam(name = "idViUni") int idViajeUnidad,@WebParam(name = "idUni") String idUnidad,@WebParam(name = "rfcCon") String rfcConductor,@WebParam(name = "fec") String fecha,@WebParam(name = "hSal") String horaSalida,@WebParam(name = "hTer") String horaTermino)
+    public int altViajeUnidad(@WebParam(name = "idViUni") int idViajeUnidad,@WebParam(name = "idUni") String idUnidad,@WebParam(name = "rfcCon") String rfcConductor,@WebParam(name = "fec") String fecha,@WebParam(name = "hSal") String horaSalida,@WebParam(name = "hTer") String horaTermino,@WebParam(name = "totPas") int totalPasajero,@WebParam(name = "dir") int direccion)
         {
             DateFormat formatter = new SimpleDateFormat("HH:mm");
             try{
@@ -814,7 +814,7 @@ public class bdActions {
                 java.sql.Time timeValue = new java.sql.Time(formatter.parse(horaSalida).getTime());
                 java.sql.Time timeValue2 = new java.sql.Time(formatter.parse(horaTermino).getTime());
                 
-                resulIns=stmt.executeUpdate("update viaje_unidad set id_unidad='"+idUnidad+"',rfc_conductor='"+rfcConductor+"',fecha='"+fecha+"',hora_salida='"+timeValue+"',hora_termino='"+timeValue2+"' where id_viaje_unidad='"+idViajeUnidad+"'");
+                resulIns=stmt.executeUpdate("update viaje_unidad set id_unidad='"+idUnidad+"',rfc_conductor='"+rfcConductor+"',fecha='"+fecha+"',hora_salida='"+timeValue+"',hora_termino='"+timeValue2+"',total_pasajeros="+totalPasajero+",direccion="+direccion+" where id_viaje_unidad='"+idViajeUnidad+"'");
                 if(resulIns>0){
                     resM=1;
                     conn.close();
@@ -854,7 +854,7 @@ public class bdActions {
             return resM;
         }
     
-    @WebMethod(operationName = "altViajeUsuario")  //Falta validar duplicidad,formato de fecha hora
+   /* @WebMethod(operationName = "altViajeUsuario")  //Falta validar duplicidad,formato de fecha hora
     public int altViajeUsuario(@WebParam(name = "idViUsu") int idViajeUsuario,@WebParam(name = "fecHor") String fechaHora,@WebParam(name = "corrUsu") String correoUsuario)
         {
      
@@ -877,7 +877,7 @@ public class bdActions {
              resM=0;}
 
             return resM;
-        }
+        }*/
     
     @WebMethod(operationName = "altUsuario")  //Falta validar duplicidad
     public int altUsuario(@WebParam(name = "corrUsu") String correoUsuario,@WebParam(name = "nom") String nombre,@WebParam(name = "pass") String password,@WebParam(name = "tip") int tipo, @WebParam(name = "noTar") String noTarjeta)
@@ -1224,7 +1224,7 @@ public class bdActions {
 
             return resM;
         }
-    
+    /*
     @WebMethod(operationName = "delViajeUsuEst")  //Falta validar duplicidad
     public int delViajeUsuEst(@WebParam(name = "idViaUsu") int idViajeUsuario,@WebParam(name = "idEst") int idEstacion)
         {
@@ -1245,7 +1245,7 @@ public class bdActions {
              resM=0;}
 
             return resM;
-        }
+        }*/
     
     @WebMethod(operationName = "delViajeUnidad")  //Falta validar duplicidad
     public int delViajeUnidad(@WebParam(name = "idViUni") int idViajeUnidad)

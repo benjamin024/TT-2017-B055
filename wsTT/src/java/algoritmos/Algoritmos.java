@@ -13,7 +13,7 @@ import java.util.Random;
 import java.util.Stack;
 
 public class Algoritmos {
-    private static Conexion bd = new Conexion("tt", "root", "b3nj4m1n");
+    private static Conexion bd = new Conexion("tt", "root", "n0m3l0");
     private static ResultSet rs;
     
     public static void reduceGrafoATransbordos() throws SQLException{
@@ -316,17 +316,261 @@ public class Algoritmos {
         }
     }
     
-        public static void calculaFrecuencia(int ruta,int sentido) throws SQLException{
+        public static int calculaFrecuencia(int ruta,int sentido) throws SQLException{
         if(bd.conecta()){
-            int flujo=0;
-            //rs = bd.consulta("select r.id_estacion from ruta_estacion r join ruta_estacion e on r.id_estacion=e.id_estacion where r.id_ruta="+rutaActual+" and e.id_ruta="+rutaSiguiente+" group by r.id_estacion;");
+            int flujo=0,unidadActual=0,noPasajeros=0,capTotal=0,noUnidades=0,asientos=0,promOcu=0;
+            double promTotal=0,ocupTotal=0,areaCamion=0,larAsientos=0,ancAsientos=0,largCamion=0,ancCamion=0,rangIniBueno=0,rangFinBueno=0,rangIniReg=0,rangFinReg=0,rangIniPes=0,rangFinPes=0;
+            double pasXmetro=0;
+            String descFrec="";
+            //pasajeros totales en las unidades 
+            rs = bd.consulta("select vu.id_viaje_unidad,vu.id_unidad,r.no_pasajeros from viaje_unidad vu,registro r,unidad u where vu.hora_termino is null and r.id_viaje_unidad=vu.id_viaje_unidad and vu.id_unidad=u.id_unidad and u.id_ruta="+ruta+" and vu.direccion="+sentido+" order by r.fecha_hora desc;");
             while(rs.next()){
-                flujo=flujo+rs.getInt("id_estacion");
-                break;
+                if(unidadActual!=rs.getInt("id_viaje_unidad"))
+                {
+                    unidadActual=rs.getInt("id_viaje_unidad");
+                    noPasajeros =noPasajeros+rs.getInt("no_pasajeros");
+                }
             }
+            
+            //promedio de cantidad total entre las unidades actualmente operando
+            rs = bd.consulta("select vu.id_unidad,u.capacidad from viaje_unidad vu,registro r,unidad u where vu.hora_termino is null and r.id_viaje_unidad=vu.id_viaje_unidad and vu.id_unidad=u.id_unidad and u.id_ruta="+ruta+" and vu.direccion="+sentido+" group by vu.id_unidad;");
+            while(rs.next()){
+                    capTotal =capTotal+rs.getInt("capacidad");
+                    noUnidades++;
+            }
+            
+            //area
+            rs = bd.consulta("select * from medidas;");
+            while(rs.next()){
+                    largCamion=rs.getDouble("largoCamion");
+                    ancCamion=rs.getDouble("anchoCamion");
+                    larAsientos=rs.getDouble("largoAsiento");
+                    ancAsientos=rs.getDouble("anchoAsiento");
+                    asientos=rs.getInt("asientos");
+                }
+            
+            //rangos
+             
+            
+            promOcu=(int) Math.ceil(noPasajeros/noUnidades);
+            promTotal=capTotal/noUnidades;
+            areaCamion=(largCamion*ancCamion)-((larAsientos*ancAsientos)*asientos);
+            pasXmetro=(int) Math.ceil(promOcu-asientos);
+            
+            int retFrec=-1;
+            if(pasXmetro<0)
+                pasXmetro=0;
+            else{
+                pasXmetro = (double)Math.round((pasXmetro/areaCamion)*100d)/100d;
+            }
+            
+            rs = bd.consulta("select * from rango_frecuencia where rango_ini<="+pasXmetro+" and rango_fin>="+pasXmetro+";");
+            while(rs.next())
+                {
+                    descFrec=rs.getString("nombre");
+                }
+
+            if(descFrec.equals(""))
+                descFrec="Pesima";
+            
+            switch(descFrec)
+            {
+                case "Buena":
+                        System.out.println("0"); //disminuir frecuencia
+                        retFrec=0;
+                    break;
+
+                case "Regular":
+                        System.out.println("1"); //mantener
+                        retFrec=1;
+                    break;
+
+                case "Pesima":
+                        System.out.println("2"); //aumentar
+                        retFrec=2;
+                    break;
+            }
+            
+           // System.out.println("Pas: "+noPasajeros);
+            //System.out.println("Uni: "+noUnidades);
+            //System.out.println("CapT: "+capTotal);
+            //System.out.println("Ocu: "+promOcu);
+            //System.out.println("Tot: "+promTotal);
+            //System.out.println("ArCamion: "+areaCamion);
+            System.out.println("Xmetro: "+pasXmetro);
+            
+            return retFrec;
         
         }else{
             System.out.println("Error en la conexión a la base de datos");
+            return -1;
+        }
+    }
+        
+    public static ArrayList tiemposEstimados(int estacion) throws SQLException
+    {
+        if(bd.conecta()){
+            ArrayList<Integer> ida = new ArrayList<>();
+            ArrayList<Integer> vuelta = new ArrayList<>();
+            ArrayList<String> unidades = new ArrayList<>();
+            int topeEstacion=0,ruta=0,totalEstaciones=0;
+            rs = bd.consulta("select * from ruta_estacion where id_estacion="+estacion+";");
+            while(rs.next())
+            {
+                ruta=rs.getInt("id_ruta");
+            }
+            
+            rs = bd.consulta("select * from ruta_estacion where id_ruta="+ruta+";");
+            while(rs.next()){
+                totalEstaciones++;
+                if(rs.getInt("id_estacion")==estacion)
+                    {
+                        topeEstacion=1;
+                        //ida.add(rs.getInt("id_estacion"));
+                       // vuelta.add(rs.getInt("id_estacion"));
+                    }
+                else
+                    {
+                        if(topeEstacion==0)
+                            ida.add(rs.getInt("id_estacion"));
+                        else
+                            vuelta.add(rs.getInt("id_estacion"));
+                    }
+            }
+            /*
+            System.out.println("IDA");
+            for(int i=0;i<ida.size();i++)
+                System.out.println(ida.get(i));
+            
+            System.out.println("Vuelta");
+            for(int i=0;i<vuelta.size();i++)
+                System.out.println(vuelta.get(i));*/
+            
+            //obtenemos el tiempo total de la ruta y luego lo dividimos entre las estaciones 
+            int tiempoXestacion=0;
+            rs = bd.consulta("select * from ruta where id_ruta="+ruta+";");
+            rs.next();
+            tiempoXestacion=rs.getInt("tiempo_recorrido");
+            tiempoXestacion=(int)tiempoXestacion/totalEstaciones;
+                      
+            //buscamos las unidades que esten en servicio en la ruta, primero de ida
+            ArrayList<String> unidOperando = new ArrayList<>();
+            ArrayList<String> unidCercanas = new ArrayList<>();
+            ArrayList<Integer> pasajerosEst = new ArrayList<>();
+            ArrayList<Integer> estUnid = new ArrayList<>();
+            int estacionActual=0,contadorUnid=0,pasajeros=0,difEstUnid=0;
+            String unidadActual="";
+            
+            rs = bd.consulta("select vu.id_unidad from viaje_unidad vu,registro r,unidad u where vu.hora_termino is null and r.id_viaje_unidad=vu.id_viaje_unidad  and u.id_ruta="+ruta+" and vu.direccion=0 and vu.fecha=curdate() group by r.id_viaje_unidad;");
+            while(rs.next())
+                {
+                    unidOperando.add(rs.getString("id_unidad"));
+                }
+
+
+            //verificamos que esas unidades no hayan pasado por la estacion de ida
+            for(int i=0;i<unidOperando.size();i++)
+                {
+                    rs = bd.consulta("select r.id_estacion,vu.id_unidad,r.no_pasajeros from viaje_unidad vu,registro r where r.id_viaje_unidad=vu.id_viaje_unidad and vu.id_unidad='"+unidOperando.get(i)+"' order by r.fecha_hora desc limit 1;");
+                    if(rs.next()){
+                        estacionActual=rs.getInt("id_estacion");
+                        unidadActual = rs.getString("id_unidad");
+                        pasajeros=rs.getInt("no_pasajeros");
+                        //buscamos si esta dentro del rango de estaciones
+                        for(int y=0;y<ida.size();y++)
+                        {
+                            //listamos solo 3 o menos unidades
+                            if(contadorUnid<=3)
+                                {
+                                    if(ida.get(y)==estacionActual)
+                                        {
+                                            unidCercanas.add(unidadActual);
+                                            pasajerosEst.add(pasajeros);
+                                            estUnid.add(estacionActual);
+                                            contadorUnid++;
+                                        }
+                                }
+                            else
+                                y=ida.size();
+                        }
+                    }
+                }
+            
+            
+            //calculamos el tiempo desde cada estacion de las unidades
+            for(int i=0;i<estUnid.size();i++)
+                {
+                    difEstUnid=ida.indexOf(estUnid.get(i));
+                    difEstUnid=(ida.size()-difEstUnid)*tiempoXestacion;
+                    unidades.add(unidCercanas.get(i)+"&"+difEstUnid+"&"+pasajerosEst.get(i)+"&0");
+                }
+            
+            //-----------------------------------------------------------------------------------------------------------
+            //de VUELTA y reiniciamos variables 
+            
+            unidOperando.clear();
+            unidCercanas.clear();
+            pasajerosEst.clear();
+            estUnid.clear();
+            estacionActual=0;
+            contadorUnid=0;
+            pasajeros=0;
+            difEstUnid=0;
+            unidadActual="";
+            
+            rs = bd.consulta("select vu.id_unidad from viaje_unidad vu,registro r,unidad u where vu.hora_termino is null and r.id_viaje_unidad=vu.id_viaje_unidad  and u.id_ruta="+ruta+" and vu.direccion=1 and vu.fecha=curdate() group by r.id_viaje_unidad;");
+            while(rs.next())
+                {
+                    unidOperando.add(rs.getString("id_unidad"));
+                }           
+            
+            //verificamos que esas unidades no hayan pasado por la estacion de ida
+            for(int i=0;i<unidOperando.size();i++)
+                {
+                    rs = bd.consulta("select r.id_estacion,vu.id_unidad,r.no_pasajeros from viaje_unidad vu,registro r where r.id_viaje_unidad=vu.id_viaje_unidad and vu.id_unidad='"+unidOperando.get(i)+"' order by r.fecha_hora desc limit 1;");
+                    if(rs.next()){
+                        estacionActual=rs.getInt("id_estacion");
+                        unidadActual = rs.getString("id_unidad");
+                        pasajeros=rs.getInt("no_pasajeros");
+                        //buscamos si esta dentro del rango de estaciones
+                        for(int y=0;y<vuelta.size();y++)
+                        {
+                            //listamos solo 3 o menos unidades
+                            if(contadorUnid<=3)
+                                {
+                                    if(vuelta.get(y)==estacionActual)
+                                        {
+                                            unidCercanas.add(unidadActual);
+                                            pasajerosEst.add(pasajeros);
+                                            estUnid.add(estacionActual);
+                                            contadorUnid++;
+                                        }
+                                }
+                            else
+                                y=vuelta.size();
+                        }
+                    }
+                }
+            
+            
+            //calculamos el tiempo desde cada estacion de las unidades
+            for(int i=0;i<estUnid.size();i++)
+                {
+                    difEstUnid=vuelta.indexOf(estUnid.get(i));
+                    difEstUnid=difEstUnid*tiempoXestacion;
+                    unidades.add(unidCercanas.get(i)+"&"+difEstUnid+"&"+pasajerosEst.get(i)+"&1");
+                }
+            
+            System.out.println("UNIDADES");
+            for(int i=0;i<unidades.size();i++)
+                System.out.println(unidades.get(i));
+            
+            return unidades;
+        }
+        else
+        {
+            System.out.println("Error en la conexión a la base de datos");
+            return null;
         }
     }
     
@@ -760,7 +1004,9 @@ public class Algoritmos {
                 System.out.print(" "+res[i]);
             
             System.out.println();*/
-           int[][] grafoCaminos = generaRutasTransbordos(51, 92, 0);
+           //int[][] grafoCaminos = generaRutasTransbordos(51, 92, 0);
+           //calculaFrecuencia(8,1);
+           ArrayList<String> unid=tiemposEstimados(112);
            //int[] resP = metodoPERT(grafoCaminos,51,92);
            //System.out.println("PERT "+resP.length);
             //for(int i = 0;i<resP.length;i++)
