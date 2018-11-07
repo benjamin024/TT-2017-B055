@@ -1514,7 +1514,7 @@ public class bdActions {
             return res;
         }
     
-    @WebMethod(operationName = "frecuencia")
+    @WebMethod(operationName = "calFrecuencia")
     public int calFrecuencia(@WebParam(name = "rut") int ruta,@WebParam(name = "sent") int sentido) {
         try{
                Algoritmos a=new Algoritmos();
@@ -1527,7 +1527,7 @@ public class bdActions {
             return resM;
         }
     
-    @WebMethod(operationName = "unidadesMin")
+    @WebMethod(operationName = "unidMinimas")
     public int unidMinimas(@WebParam(name = "rut") int ruta) {
         try{
                Algoritmos a=new Algoritmos();
