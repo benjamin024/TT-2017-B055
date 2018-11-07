@@ -13,7 +13,7 @@ import java.util.Random;
 import java.util.Stack;
 
 public class Algoritmos {
-    private static Conexion bd = new Conexion("tt", "root", "n0m3l0");
+    private static Conexion bd = new Conexion("tt", "root", "b3nj4m1n");
     private static ResultSet rs;
     
     public static void reduceGrafoATransbordos() throws SQLException{

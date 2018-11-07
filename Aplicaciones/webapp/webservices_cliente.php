@@ -343,4 +343,40 @@
 
         exit(1);
     }
+
+    if($ACCION == "registraViaje"){
+        $id_unidad =@$_POST["unidad"];
+        $rfc_conductor =@$_POST["conductor"];
+        $fecha =@$_POST["fecha"];
+        $hora_salida =@$_POST["hora"].":00";
+        $direccion =@$_POST["direccion"];
+
+        $parametros["qr"] = "INSERT INTO viaje_unidad(id_unidad, rfc_conductor, fecha, hora_salida, direccion) VALUES('$id_unidad', '$rfc_conductor', '$fecha', '$hora_salida', $direccion);";
+        
+        $result = $client->queryUDI($parametros);
+        $result = (array) $result;
+        header("location: form_reg_viaje.php");
+        exit(1);
+    }
+
+    function getDemanda($idRuta, $direccion){
+        GLOBAL $client;
+        $parametros["rut"] = $idRuta;
+        $parametros["sent"] = $direccion;
+        
+        $result = $client->calFrecuencia($parametros);
+        $result = (array) $result;
+        
+        return $result["return"];
+    }
+
+    function getUnidadesMinimas($idRuta){
+        GLOBAL $client;
+        $parametros["rut"] = $idRuta;
+        
+        $result = $client->unidMinimas($parametros);
+        $result = (array) $result;
+        
+        return $result["return"];
+    }
 ?>

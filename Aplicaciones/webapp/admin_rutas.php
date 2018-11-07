@@ -120,7 +120,7 @@
                                                 echo "<td style='background-color: ".$r["color"]."'>&nbsp;</td>";
                                                 echo "<td style='text-align: center;'><img src='img/ico-horario.png' onclick='verHorario(".$r["id_ruta"].");' style='cursor: pointer;' width='25px'></td>";
                                                 echo "<td>".$r["combustible"]." litros</td>";
-                                                echo "<td>".$r["frecuencia"]." minutos</td>";
+                                                echo "<td></td>";//.$r["frecuencia"]." minutos</td>";
                                                 echo "<td>";
                                                 $tarifas = selectWhere("rt.id_ruta = ".$r["id_ruta"], "descripcion", "ruta_tarifa as rt INNER JOIN tarifa as t ON rt.id_tarifa = t.id_tarifa");
                                                 $aux = array();
