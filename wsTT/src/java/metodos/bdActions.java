@@ -1526,4 +1526,17 @@ public class bdActions {
 
             return resM;
         }
+    
+    @WebMethod(operationName = "unidadesMin")
+    public int unidMinimas(@WebParam(name = "rut") int ruta) {
+        try{
+               Algoritmos a=new Algoritmos();
+               resM = a.obtieneUnidadesMinimas(ruta);
+            }
+         catch(Exception e){
+             System.out.println(e);
+             resM=-1;}
+
+            return resM;
+        }
 }
