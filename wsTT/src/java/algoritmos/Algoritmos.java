@@ -13,7 +13,7 @@ import java.util.Random;
 import java.util.Stack;
 
 public class Algoritmos {
-    private static Conexion bd = new Conexion("tt", "root", "b3nj4m1n");
+    private static Conexion bd = new Conexion("tt", "root", "n0m3l0");
     private static ResultSet rs;
     
     public static void reduceGrafoATransbordos() throws SQLException{
@@ -350,46 +350,53 @@ public class Algoritmos {
                 }
             
             //rangos
-             
-            
-            promOcu=(int) Math.ceil(noPasajeros/noUnidades);
-            promTotal=capTotal/noUnidades;
-            areaCamion=(largCamion*ancCamion)-((larAsientos*ancAsientos)*asientos);
-            pasXmetro=(int) Math.ceil(promOcu-asientos);
-            
             int retFrec=-1;
-            if(pasXmetro<0)
-                pasXmetro=0;
-            else{
-                pasXmetro = (double)Math.round((pasXmetro/areaCamion)*100d)/100d;
-            }
-            
-            rs = bd.consulta("select * from rango_frecuencia where rango_ini<="+pasXmetro+" and rango_fin>="+pasXmetro+";");
-            while(rs.next())
-                {
-                    descFrec=rs.getString("nombre");
+
+            if(noUnidades>0)
+            {
+                promOcu=(int) Math.ceil(noPasajeros/noUnidades);
+
+
+                promTotal=capTotal/noUnidades;
+                areaCamion=(largCamion*ancCamion)-((larAsientos*ancAsientos)*asientos);
+                pasXmetro=(int) Math.ceil(promOcu-asientos);
+
+                
+                if(pasXmetro<0)
+                    pasXmetro=0;
+                else{
+                    pasXmetro = (double)Math.round((pasXmetro/areaCamion)*100d)/100d;
                 }
 
-            if(descFrec.equals(""))
-                descFrec="Pesima";
-            
-            switch(descFrec)
-            {
-                case "Buena":
-                        System.out.println("0"); //disminuir frecuencia
-                        retFrec=0;
-                    break;
+                rs = bd.consulta("select * from rango_frecuencia where rango_ini<="+pasXmetro+" and rango_fin>="+pasXmetro+";");
+                while(rs.next())
+                    {
+                        descFrec=rs.getString("nombre");
+                    }
 
-                case "Regular":
-                        System.out.println("1"); //mantener
-                        retFrec=1;
-                    break;
+                if(descFrec.equals(""))
+                    descFrec="Pesima";
 
-                case "Pesima":
-                        System.out.println("2"); //aumentar
-                        retFrec=2;
-                    break;
+                switch(descFrec)
+                {
+                    case "Buena":
+                            System.out.println("0"); //disminuir frecuencia
+                            retFrec=0;
+                        break;
+
+                    case "Regular":
+                            System.out.println("1"); //mantener
+                            retFrec=1;
+                        break;
+
+                    case "Pesima":
+                            System.out.println("2"); //aumentar
+                            retFrec=2;
+                        break;
+                }
             }
+            else
+                retFrec=1;
             
            // System.out.println("Pas: "+noPasajeros);
             //System.out.println("Uni: "+noUnidades);
@@ -1005,8 +1012,9 @@ public class Algoritmos {
             
             System.out.println();*/
            //int[][] grafoCaminos = generaRutasTransbordos(51, 92, 0);
-           //calculaFrecuencia(8,1);
-           ArrayList unid=tiemposEstimados(112);
+           int res=calculaFrecuencia(8,1);
+            System.out.println("res "+res);
+           //ArrayList unid=tiemposEstimados(112);
            //int[] resP = metodoPERT(grafoCaminos,51,92);
            //System.out.println("PERT "+resP.length);
             //for(int i = 0;i<resP.length;i++)
