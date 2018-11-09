@@ -11,7 +11,7 @@
     <div class="container-fluid">
         <div class="row">
             <?php include("menu-lat.html"); ?>
-            <div class="col-md-10">
+            <div class="col-md-10 offset-md-2">
                 <?php
                     ini_set('soap.wsdl_cache_enabled', 0);
                     ini_set('soap.wsdl_cache_ttl', 900);

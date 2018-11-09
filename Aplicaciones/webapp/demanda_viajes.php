@@ -18,7 +18,7 @@
     <div class="container-fluid">
         <div class="row">
             <?php include("menu-lat.html"); ?>
-            <div class="col-md-10">
+            <div class="col-md-10 offset-md-2">
                 <div class="row"  style="position: relative; top: 50px;  width: 98%; max-height:100%; margin: 0px;  justify-content: center;">
                     <div class="card" style="width: 1150px;  color: #FFF; background-color: rgba(0,0,0,0.7);">
                         <div class="card-body justify-content-center">
@@ -46,8 +46,8 @@
                                     <tbody style="color: #FFF; text-align: center;">
                                         <?php
                                             foreach($rutas as $r){
-                                                $enCursoIda = selectWhere("u.id_ruta = ".$r["id_ruta"]." and vu.fecha=NOW() and vu.hora_termino is NULL and vu.direccion = 1", "count(*) as num", "viaje_unidad vu inner join unidad u on vu.id_unidad = u.id_unidad")[0]["num"];
-                                                $enCursoVuelta = selectWhere("u.id_ruta = ".$r["id_ruta"]." and vu.fecha=NOW() and vu.hora_termino is NULL and vu.direccion = 0", "count(*) as num", "viaje_unidad vu inner join unidad u on vu.id_unidad = u.id_unidad")[0]["num"];
+                                                $enCursoIda = selectWhere("u.id_ruta = ".$r["id_ruta"]." and vu.fecha=CURDATE() and vu.hora_termino is NULL and vu.direccion = 1", "count(*) as num", "viaje_unidad vu inner join unidad u on vu.id_unidad = u.id_unidad")[0]["num"];
+                                                $enCursoVuelta = selectWhere("u.id_ruta = ".$r["id_ruta"]." and vu.fecha=CURDATE() and vu.hora_termino is NULL and vu.direccion = 0", "count(*) as num", "viaje_unidad vu inner join unidad u on vu.id_unidad = u.id_unidad")[0]["num"];
                                                 echo "<tr>";
                                                 echo "<td>".$r["nombre"]."</td>";
                                                 echo "<td>$enCursoIda</td>";

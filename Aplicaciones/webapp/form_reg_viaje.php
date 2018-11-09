@@ -16,8 +16,8 @@
     <div class="container-fluid">
         <div class="row">
             <?php include("menu-lat.html"); ?>
-            <div class="col-md-10">
-                <div class="row align-items-center h-100"  style="position: absolute; top: 0px;  width: 90%; height:100%; margin: 0px;  justify-content: center;">
+            <div class="col-md-10 offset-md-2">
+                <div class="row align-items-center h-100"  style="position: absolute; top: 250px;  width: 90%; height:100%; margin: 0px;  justify-content: center;">
                     <div class="card" style="max-width: 500px; color: #FFF; background-color: rgba(0,0,0,0.85);">
                         <div class="card-body justify-content-center">
                             <h4 class="card-title" style="text-align: center;">Registrar comienzo de viaje</h4>

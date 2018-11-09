@@ -13,7 +13,7 @@ import java.util.Random;
 import java.util.Stack;
 
 public class Algoritmos {
-    private static Conexion bd = new Conexion("tt", "root", "b3nj4m1n");
+    private static Conexion bd = new Conexion("18.220.128.11", "tt", "remotoAWS", "n0m3l0");
     private static ResultSet rs;
     
     public static void reduceGrafoATransbordos() throws SQLException{
@@ -58,8 +58,10 @@ public class Algoritmos {
                 for(i = 0; i < ids.size() + 1; i++){
                     for(j = 0; j < ids.size() + 1; j++){
                         bw.write(grafoR[i][j] + " ");
+                        System.out.print(grafoR[i][j] + " ");
                     }
                     bw.write("\n");
+                    System.out.println("");
                 }
                 bw.close();
             } catch (IOException ex) {
@@ -977,7 +979,7 @@ public class Algoritmos {
     
     public static void main(String[] args) {
         try {
-            //reduceGrafoATransbordos();
+            reduceGrafoATransbordos();
             //generaViajesUnidad(6);
             //obtieneUnidadesMinimas(8);
             //Dijkstra d = new Dijkstra();
@@ -1012,8 +1014,8 @@ public class Algoritmos {
             
             System.out.println();*/
            //int[][] grafoCaminos = generaRutasTransbordos(51, 92, 0);
-           int res=calculaFrecuencia(8,1);
-            System.out.println("res "+res);
+           //int res=calculaFrecuencia(8,1);
+            //System.out.println("res "+res);
            //ArrayList unid=tiemposEstimados(112);
            //int[] resP = metodoPERT(grafoCaminos,51,92);
            //System.out.println("PERT "+resP.length);

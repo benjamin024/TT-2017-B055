@@ -1,4 +1,16 @@
 <?php
+    function getTransbordos($ruta_estaciones, $estacion){
+        $transbordos = array();
+        foreach($ruta_estaciones as $re){
+            if($re["id_estacion"] == $estacion){
+                if(!in_array($re["id_estacion"], $transbordos))
+                    $transbordos[] = $re["id_ruta"];
+            }
+        }
+
+        return implode(",", $transbordos);
+    }
+
     $hex = "#";
 	$hex.= str_pad(dechex(rand(0,255)), 2, "0", STR_PAD_LEFT);
 	$hex.= str_pad(dechex(rand(0,255)), 2, "0", STR_PAD_LEFT);
@@ -6,21 +18,13 @@
     
     include_once("webservices_cliente.php");
     $estaciones = selectWhere("id_estacion > 50", "*", "estacion");
+    $ruta_estaciones = selectWhere("1", "*", "ruta_estacion");
     
     $marcadores = array();
     foreach($estaciones as $e){
-        $ruta_e = selectWhere("id_estacion = ".$e["id_estacion"], "*", "ruta_estacion");
-        $transbordos = array();
-        if($ruta_e){
-            foreach($ruta_e as $re){
-                if(!in_array($re["id_ruta"], $transbordos))
-                    $transbordos[] = $re["id_ruta"];
-            }
-        }
-        $marcadores[] = "['".$e["nombre"]."', ".$e["latitud"].", ".$e["longitud"].", ".implode(",", $transbordos)."]";
+        $marcadores[] = "['".$e["nombre"]."', ".$e["latitud"].", ".$e["longitud"].", ".getTransbordos($ruta_estaciones, $e["id_estacion"])."]";
     }
     $marcadores = "[".implode(",", $marcadores)."]";
-
 ?>
 
 <!DOCTYPE html>
@@ -234,8 +238,8 @@
     <div class="container-fluid">
         <div class="row">
             <?php include("menu-lat.html"); ?>
-            <div class="col-md-10">
-            <div class="row align-items-center h-100"  style="position: absolute; top: 0px;  width: 90%; height:100%; margin: 0px;  justify-content: center;">
+            <div class="col-md-10 offset-md-2">
+            <div class="row align-items-center h-100"  style="position: relative; top: 50px;  width: 90%; height:100%; margin: 0px;  justify-content: center;">
                     <div class="card" style="width: 800px; color: #FFF; background-color: rgba(0,0,0,0.85);">
                         <div class="card-body justify-content-center">
                             <h4 class="card-title" style="text-align: center;">Registrar ruta</h4>
@@ -277,10 +281,14 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
+                                            <label for="combustible" style="font-weight: bold; font-size: 18px;">Tiempo estimado de recorrido:</label>
+                                            <input type="number" min="1" class="form-control" id="tiempoViaje" name="tiempoViaje" placeholder="Minutos" required>
+                                        </div>
+                                        <div class="form-group">
                                             <label for="forma" style="font-weight: bold; font-size: 18px;">Tarifas:</label><br>
                                             <div id="lisTarifa">
                                             <?php
-                                                $tarifas = selectWhere("1 = 1", "*", "tarifa");
+                                                $tarifas = selectWhere("1", "*", "tarifa");
                                                 foreach($tarifas as $t){
                                                     echo "<input type='checkbox' name='tarifas[]' value='".$t["id_tarifa"]."'> ".$t["descripcion"]." ($".$t["costo"].")<br>";
                                                 }
@@ -301,7 +309,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="frecuencia" style="font-weight: bold; font-size: 18px;">Frecuencia de corridas:</label>
-                                            <input type="number" class="form-control" id="frecuencia" name="frecuencia" placeholder="Minutos" required>
+                                            <input type="number" min="1" class="form-control" id="frecuencia" name="frecuencia" placeholder="Minutos" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="forma" style="font-weight: bold; font-size: 18px;">Horarios:</label><br>
@@ -310,7 +318,7 @@
                                             <?php
                                                 $dias = array("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo");
                                                 for($i = 0; $i < count($dias); $i++){
-                                                    echo "<tr><td>".$dias[$i].": </td><td style='padding: 2px;'><input class='form-control' type='time' name='ini_$i'></td><td style='padding: 2px;'><input class='form-control' type='time' name='fin_$i'></td></tr>";
+                                                    echo "<tr><td>".$dias[$i].": </td><td style='padding: 2px;'><input class='form-control' type='time' name='ini_$i' value='06:00:00'></td><td style='padding: 2px;'><input class='form-control' type='time' name='fin_$i' value='22:00:00'></td></tr>";
                                                 }
                                             ?>                                                
                                             </table>

@@ -80,7 +80,7 @@
     <div class="container-fluid">
         <div class="row">
             <?php include("menu-lat.html"); ?>
-            <div class="col-md-10">
+            <div class="col-md-10 offset-md-2">
                 <div class="row"  style="position: relative; top: 50px;  width: 98%; max-height:100%; margin: 0px;  justify-content: center;">
                     <div class="card" style="width: 800px;  color: #FFF; background-color: rgba(0,0,0,0.7);">
                         <div class="card-body justify-content-center">

@@ -14,9 +14,9 @@ public class Conexion {
             private Statement stmt;
             private ResultSet rs;    
             
-            public Conexion(String base, String user, String pass){
+            public Conexion(String host, String base, String user, String pass){
                 password = pass;
-                url = "jdbc:mysql://localhost/"+base+"?user="+user+"&password="+pass+"&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+                url = "jdbc:mysql://"+host+"/"+base+"?user="+user+"&password="+pass+"&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
                 conn = null;
                 stmt = null;
                 rs = null;

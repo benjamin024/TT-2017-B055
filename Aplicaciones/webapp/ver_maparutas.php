@@ -1,17 +1,24 @@
 <?php
     include("webservices_cliente.php");
-    $estaciones = selectWhere("id_estacion > 50", "*", "estacion");
-    $marcadores = array();
-    foreach($estaciones as $e){
-        $ruta_e = selectWhere("id_estacion = ".$e["id_estacion"], "*", "ruta_estacion");
+
+    function getTransbordos($ruta_estaciones, $estacion){
         $transbordos = array();
-        if($ruta_e){
-            foreach($ruta_e as $re){
-                if(!in_array($re["id_ruta"], $transbordos))
+        foreach($ruta_estaciones as $re){
+            if($re["id_estacion"] == $estacion){
+                if(!in_array($re["id_estacion"], $transbordos))
                     $transbordos[] = $re["id_ruta"];
             }
         }
-        $marcadores[] = "['".$e["nombre"]."', ".$e["latitud"].", ".$e["longitud"].", ".implode(",", $transbordos)."]";
+
+        return implode(",", $transbordos);
+    }
+
+    $estaciones = selectWhere("id_estacion > 50", "*", "estacion");
+    $ruta_estaciones = selectWhere("1", "*", "ruta_estacion");
+
+    $marcadores = array();
+    foreach($estaciones as $e){
+        $marcadores[] = "['".$e["nombre"]."', ".$e["latitud"].", ".$e["longitud"].", ".getTransbordos($ruta_estaciones, $e["id_estacion"])."]";
     }
     $marcadores = "[".implode(",", $marcadores)."]";
 ?>
@@ -125,7 +132,7 @@
     <div class="container-fluid">
         <div class="row">
             <?php include("menu-lat.html"); ?>
-            <div class="col-md-10" style="padding: 0px;">
+            <div class="col-md-10 offset-md-2" style="padding: 0px;">
                 <div id="map" style="height: 100%;"></div>
             </div>
         </div>

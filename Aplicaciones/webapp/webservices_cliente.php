@@ -252,12 +252,15 @@
         $numEstaciones=@$_POST["numEstaciones"];
         $ordenEstaciones=@$_POST["ordenEstaciones"];
         $frecuencia =@$_POST["frecuencia"];
+        $tiempoViaje =@$_POST["tiempoV"];
         
         $rutaData["nom"] = $nombreR;
         $rutaData["comb"] = $combustible;
         $rutaData["fCob"] = $formasC;
         $rutaData["col"] = $color;
-        $rutaData["frec"] = $frecuencia;
+        $rutaData["frecIda"] = $frecuencia;
+        $rutaData["frecVuel"] = $frecuencia;
+        $rutaData["tiemRec"] = $tiempoViaje;
 
         if($client->insRuta($rutaData)){
             $idR = selectWhere("1 = 1", "MAX(id_ruta) as id", "ruta")[0]["id"];

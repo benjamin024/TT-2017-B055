@@ -7,7 +7,7 @@ public class Dijkstra {
 
 	private static final int SIN_PADRE = -1; 
         static String ruta = "";
-        private static Conexion bd = new Conexion("tt", "root", "b3nj4m1n");
+        private static Conexion bd = new Conexion("18.220.128.11", "tt", "remotoAWS", "n0m3l0");
         private static ResultSet rs;
         
         private static int indexOf(int[] array, int value){
