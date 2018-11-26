@@ -13,7 +13,8 @@ import java.util.Random;
 import java.util.Stack;
 
 public class Algoritmos {
-    private static Conexion bd = new Conexion("18.220.128.11", "tt", "remotoAWS", "n0m3l0");
+    //private static Conexion bd = new Conexion("18.220.128.11", "tt", "remotoAWS", "n0m3l0");
+    private static Conexion bd = new Conexion("localhost", "tt", "root", "n0m3l0");
     private static ResultSet rs;
     
     public static void reduceGrafoATransbordos() throws SQLException{
@@ -221,6 +222,12 @@ public class Algoritmos {
                                     for(int x=0;x<rutasGen.size();x++)
                                         System.out.print(rutasGen.get(x)+",");
                                     
+                                    ArrayList<Integer> pesos;
+                                    
+                                    if(operacion==1)
+                                        pesos = calculaPesos(rutasGen);
+                                    else
+                                        pesos = calculaPesos(rutasGen,estacionInicial,estacionFinal);
                                     //Ingresando valores a la matriz
                                     
                                     int filaActual=0,rutActual,vecinoAnt,vecinoPost,caso;
@@ -257,10 +264,13 @@ public class Algoritmos {
                                             }
                                         
                                         //Comenzamos a poner 1 donde se unan los nodos
+                                        int contadorPesos=0;
                                         for(int y=1;y<contador;y++)
                                         {
                                             if(matrizResultado[0][y]==vecinoPost)
-                                                matrizResultado[filaActual][y]=1;
+                                                {
+                                                    matrizResultado[filaActual][y]=pesos.get(contadorPesos);
+                                                }
                                         }
                                     }
                                     
@@ -314,6 +324,188 @@ public class Algoritmos {
                 }
         }else{
             System.out.println("Error en la conexión a la base de datos");
+            return null;
+        }
+    }
+    
+    public static int buscaId(String estacion) throws SQLException{
+        if(bd.conecta()){
+            rs = bd.consulta("select id_estacion from estacion where nombre='"+estacion+"';");
+            rs.next();
+            int id=rs.getInt("id_estacion");
+            
+            return id;
+        }
+        else
+        {
+            System.out.println("Fallo de conexion en la bd");
+            return -1;
+        }
+    }
+    
+    public static ArrayList<Integer> calculaPesos(ArrayList camino) throws SQLException{
+        if(bd.conecta()){
+            ArrayList<Double> pesos = new ArrayList<>();
+            ArrayList<Integer> pesosFinal = new ArrayList<>();
+            for(int i=0;i<camino.size();i++)
+                {
+                    double pesoAux=0;
+                    rs = bd.consulta("select t.costo from tarifa t,ruta_tarifa rt,ruta r where rt.id_tarifa=t.id_tarifa and r.id_ruta=rt.id_ruta and r.id_ruta="+camino.get(i)+";");
+                    while(rs.next())
+                    {
+                        if(pesoAux==0)
+                            pesoAux=rs.getDouble("costo");
+                        else
+                        {
+                            if(rs.getInt("costo")>pesoAux)
+                                pesoAux=rs.getDouble("costo");
+                        }
+                    }
+                    pesos.add(pesoAux);
+                }
+            
+            
+            for(int i=0;i<pesos.size();i++)
+                pesosFinal.add(pesos.get(i).intValue());
+            
+            System.out.println("PESOS");
+            
+            for(int i=0;i<pesos.size();i++)
+                System.out.println(pesos.get(i));
+            
+            return pesosFinal;
+        }
+        else{
+            System.out.println("Error en la conexion de la bd");
+            return null;
+        }
+    }
+    
+    //para los tiempos
+    public static ArrayList<Integer> calculaPesos(ArrayList<Integer> camino,int estacionInicial,int estacionFinal) throws SQLException{
+        if(bd.conecta()){
+            //int rutaInicial=0, rutaFinal=0;//,nodoAnterior,nodoSiguiente,auxValueAnt,auxValueSig,valueNodo;
+         
+            //rutaInicial=camino.get(0);
+
+           // rutaFinal=camino.get(camino.size()-1);
+           // System.out.println("Inicial: "+rutaInicial);
+            //System.out.println("Final: "+rutaFinal);
+            
+            int rutaActual=0,rutaSiguiente=0,estPartida=estacionInicial,estTope=0;
+            ArrayList<Integer> estacionesRuta = new ArrayList<>();
+            ArrayList<Integer> estacionesRutaDesc = new ArrayList<>();
+            ArrayList<Integer> pesos = new ArrayList<>();
+
+            for(int i=0;i<camino.size();i++)
+            {
+                estacionesRuta.clear();
+                rutaActual=camino.get(i);
+                estacionesRutaDesc.clear();
+                int flagDesc=0;
+                
+                if(i!=camino.size()-1)
+                    {
+                        rutaSiguiente=camino.get(i+1);
+                        //se hace un select de donde se unen las rutas
+                        rs = bd.consulta("select r.id_estacion from ruta_estacion r join ruta_estacion e on r.id_estacion=e.id_estacion where r.id_ruta="+rutaActual+" and e.id_ruta="+rutaSiguiente+" group by r.id_estacion;");
+                        while(rs.next()){
+                            estTope=rs.getInt("id_estacion");
+                            break;
+                        }
+                    }
+                else
+                    estTope=estacionFinal;
+                
+               // System.out.println("La final "+estTope+"\n");
+               int tiempoXestacion=0;
+               int numEstacionesTotales=0;
+               
+               rs = bd.consulta("select tiempo_recorrido from ruta where id_ruta="+rutaActual+";");
+               rs.next();
+               tiempoXestacion=rs.getInt("tiempo_recorrido");
+               
+               rs = bd.consulta("select count(*) as num from ruta_estacion where id_ruta="+rutaActual+";");
+               rs.next();
+               numEstacionesTotales=rs.getInt("num");
+               
+               tiempoXestacion = tiempoXestacion/numEstacionesTotales;
+               
+               if(estTope!=estacionInicial)
+               {
+                int topeAux=0,partidaAux=0,flagInicio=0,contador=0,whileCon=0;
+                
+                rs = bd.consulta("select * from ruta_estacion where id_ruta="+rutaActual+";");
+                
+                while(rs.next()){
+                        if(rs.getInt("id_estacion")==estPartida && flagInicio!=1)
+                        {
+                            flagInicio=1;
+                            topeAux=estTope;
+                            partidaAux=estPartida;
+                            flagDesc=0;
+                        }
+                    
+                        if(rs.getInt("id_estacion")==estTope && flagInicio!=1)
+                        {
+                            flagInicio=1;
+                            topeAux=estPartida;
+                            partidaAux=estTope;
+                            flagDesc=1;
+                        }
+                        
+                        if(flagInicio==1)
+                            {
+                                if(rs.getInt("id_estacion")==topeAux || rs.getInt("id_estacion")==partidaAux)
+                                    contador++;
+                                
+                                if(flagDesc==0)
+                                {
+                                    if(i==0)
+                                        estacionesRuta.add(rs.getInt("id_estacion"));
+
+                                    if(i>0 && whileCon>0)
+                                        estacionesRuta.add(rs.getInt("id_estacion"));
+                                }
+                                else
+                                {
+                                    estacionesRutaDesc.add(rs.getInt("id_estacion"));
+                                }
+                                
+                                whileCon++;
+                            }
+                        
+                        if(contador==2)
+                            break;
+                    }
+                if(flagDesc==1)
+                        {
+                            estacionesRutaDesc.remove(estacionesRutaDesc.size()-1);
+                            for(int t=estacionesRutaDesc.size()-1;t>=0;t--)
+                                estacionesRuta.add(estacionesRutaDesc.get(t));
+                        }
+                }
+               else
+                   estacionesRuta.add(estTope);
+                   
+                estPartida = estTope;
+                
+                //for(int y=0;y<estacionesRuta.size();y++)
+                //    System.out.print(" "+estacionesRuta.get(y));
+                
+                pesos.add(tiempoXestacion*estacionesRuta.size());
+            
+                
+            }
+            
+            
+            for(int y=0;y<pesos.size();y++)
+                    System.out.print(" "+pesos.get(y));
+            
+            return pesos;
+        }
+        else{
+            System.out.println("Error en la conexion de la bd");
             return null;
         }
     }
@@ -590,6 +782,7 @@ public class Algoritmos {
             ArrayList<Integer> camino = new ArrayList<>();
             camino.clear();
             
+            System.out.println("Path "+path.length);
             for(int i=0;i<path.length-1;i++)
                 camino.add(path[i]);
             
@@ -632,9 +825,9 @@ public class Algoritmos {
                     }
                 }
             }*/
-            
-          /*  for(int i=0;i<camino.size();i++)
-                System.out.print(" "+camino.get(i));*/
+            System.out.println("LLEGA "+camino.size());
+            for(int i=0;i<camino.size();i++)
+                System.out.print(" "+camino.get(i));
             
          //   System.out.print("\n");
             rutaInicial=camino.get(0);
@@ -731,47 +924,6 @@ public class Algoritmos {
             
             for(int i=0;i<dimension;i++)
                 matrizCaminoRes[i]=estacionesRuta.get(i);
-            
-            int nodoAct=0,vecinoPost;
-            
-            //seteamos todo 0
-           /* for(int i=0;i<dimension;i++)
-            {
-                for(int j=0;j<dimension;j++)
-                    matrizCaminoRes[i][j]=0;
-            }
-            
-            //ponemos estaciones
-            for(int i=1;i<dimension;i++)
-            {
-                matrizCaminoRes[0][i]=estacionesRuta.get(i-1);
-                matrizCaminoRes[i][0]=estacionesRuta.get(i-1);
-            }
-            
-            for(int i=1;i<dimension;i++)
-            {
-                //nodoAct=estacionesRuta.get(i);
-                if(i<dimension-1)
-                {
-                    vecinoPost=estacionesRuta.get(i);
-                    for(int j=1;j<dimension;j++)
-                    {
-                        if(matrizCaminoRes[0][j]==vecinoPost)
-                            matrizCaminoRes[i][j]=1;
-                    }
-                }
-            }
-            System.out.print("\n");
-            
-            for(int i=0;i<dimension;i++)
-            {
-                for(int j=0;j<dimension;j++)
-                {
-                        System.out.print(matrizCaminoRes[i][j]);
-                }
-                
-                System.out.print("\n");
-            }*/
             
             return matrizCaminoRes;
         }else{
@@ -952,6 +1104,38 @@ public class Algoritmos {
         }
     }
     
+    public static String nombrEst(int est) throws SQLException{
+        
+        
+        if(bd.conecta()){
+            rs = bd.consulta("SELECT nombre FROM estacion WHERE id_estacion = " + est);
+            rs.next();
+            String nom = rs.getString("nombre");
+            return nom;
+        }
+        else
+        {
+            System.out.println("Fallo en BD");   
+            return null;
+        }
+    }
+    
+    public static int idEst(String est) throws SQLException{
+        
+        
+        if(bd.conecta()){
+            rs = bd.consulta("SELECT id_estacion FROM estacion WHERE nombre = \"" + est+"\"");
+            rs.next();
+            int estId = rs.getInt("id_estacion");
+            return estId;
+        }
+        else
+        {
+            System.out.println("Fallo en BD");   
+            return -1;
+        }
+    }
+    
     public static int obtieneUnidadesMinimas(int ruta) throws SQLException{
         int minimo = 0;
         //Obtenemos tiempo de recorrido y frecuencias de viaje de la ruta
@@ -979,7 +1163,7 @@ public class Algoritmos {
     
     public static void main(String[] args) {
         try {
-            reduceGrafoATransbordos();
+            //reduceGrafoATransbordos();
             //generaViajesUnidad(6);
             //obtieneUnidadesMinimas(8);
             //Dijkstra d = new Dijkstra();
@@ -1013,7 +1197,22 @@ public class Algoritmos {
                 System.out.print(" "+res[i]);
             
             System.out.println();*/
-           //int[][] grafoCaminos = generaRutasTransbordos(51, 92, 0);
+           
+           
+           int[][] grafoCaminos = generaRutasTransbordos(89, 51, 0);
+            System.out.println("SALIENDO");
+          /* for(int i=0;i<grafoCaminos.length;i++)
+                System.out.print(" "+grafoCaminos[i]);*/
+           
+          // int r = buscaId("Nazario Ortiz Garza, 102");
+           // System.out.println("es: "+r);
+          
+         /* ArrayList<Integer> camino = new ArrayList<>();
+          camino.add(5);
+          camino.add(6);
+          camino.add(7);
+          calculaPesos(camino,55,99);*/
+          
            //int res=calculaFrecuencia(8,1);
             //System.out.println("res "+res);
            //ArrayList unid=tiemposEstimados(112);

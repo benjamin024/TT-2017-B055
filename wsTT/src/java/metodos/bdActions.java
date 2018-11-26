@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import planificador.Planificador;
 /**
  *
  * @author Luis R
@@ -46,8 +47,12 @@ public class bdActions {
     {
         try
         {
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-            conn = DriverManager.getConnection("jdbc:mysql://18.220.128.11/tt?user=remotoAWS&password=n0m3l0&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/tt?user=root&password=n0m3l0&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC");
+          //  Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+            //conn = DriverManager.getConnection("jdbc:mysql://18.220.128.11/tt?user=remotoAWS&password=n0m3l0&useSSL=false&useJDBCCompliantTimezoneShift=false&useLegacyDatetimeCode=false");
+           // conn = DriverManager.getConnection("jdbc:mysql://localhost/tt?user=root&password=n0m3l0&useSSL=false&useJDBCCompliantTimezoneShift=false&useLegacyDatetimeCode=false");
+            //&serverTimezone=GMT-6
             stmt = conn.createStatement();
         }
         catch(Exception e)
@@ -1539,4 +1544,124 @@ public class bdActions {
 
             return resM;
         }
+    @WebMethod(operationName = "viajeMinExtra",action="http://metodos/viajeMinExtra")
+    public String viajeMinExtra(@WebParam(name = "estInicial") String estacionIni,@WebParam(name = "estFinal") String estacionFin,@WebParam(name = "operacion") String oper) {
+        try{
+               
+               
+               Planificador p=new Planificador();
+               Algoritmos a=new Algoritmos();
+               int esIn = a.buscaId(estacionIni);
+               int esFi =  a.buscaId(estacionFin);
+               int finalRes=0;
+               int op = Integer.parseInt(oper);
+               int [] camino = p.planificadorUsuarios(op,esIn,esFi);
+               ArrayList<Integer> datoExtra=new ArrayList<>();
+               ArrayList<Integer> ruta=new ArrayList<>();
+               
+               for(int i=0;i<camino.length;i++)
+                   ruta.add(camino[i]);
+               
+               if(op==1)
+                   datoExtra=a.calculaPesos(ruta);
+               else
+                   datoExtra=a.calculaPesos(ruta,esIn,esFi);
+                   
+               for(int i=0;i<datoExtra.size();i++)
+               {
+                   finalRes=finalRes+datoExtra.get(i);
+               }
+               
+               return String.valueOf(finalRes);
+                    
+            }
+         catch(Exception e){
+             System.out.println(e);
+             resM=-1;}
+
+            return null;
+        }
+    
+    @WebMethod(operationName = "viajeMin",action="http://metodos/viajeMin")
+    public String viajeMin(@WebParam(name = "estInicial") String estacionIni,@WebParam(name = "estFinal") String estacionFin,@WebParam(name = "operacion") String oper) {
+        try{
+               Planificador p=new Planificador();
+               Algoritmos a = new Algoritmos();
+               int esIn = a.buscaId(estacionIni);
+               int esFi =  a.buscaId(estacionFin);
+               System.out.println("oper "+oper);
+               System.out.println("es "+esIn);
+               System.out.println("es2 "+esFi);
+               int op = Integer.parseInt(oper);
+               
+               int [] camino = p.planificadorUsuarios(op,esIn,esFi);
+               
+               ArrayList<Integer> ruta=new ArrayList<>();
+               
+               for(int i=0;i<camino.length-2;i++)
+                   ruta.add(camino[i]);
+               
+               String rutaS="";
+               
+               for(int i=0;i<camino.length-2;i++)
+               {
+                   rutaS=rutaS+a.nombrEst(camino[i])+"&";
+               }
+               
+               if(rutaS!=null)
+               {
+                   rutaS = rutaS.substring(0, rutaS.length()-1);
+                   rutaS = rutaS+"#"+camino[camino.length-2]+"&"+camino[camino.length-1];
+               }
+               
+               System.out.println("RUTAS: "+rutaS);
+               conn.close();
+               return rutaS;
+                    
+            }
+         catch(Exception e){
+             System.out.println(e);
+             resM=-1;}
+
+            return null;
+        }
+    
+    @WebMethod(operationName = "tiemposEst",action="http://metodos/tiemposEst")
+    public String tiemposEst(@WebParam(name = "estInicial") String estacion) {
+        try{
+             
+               Algoritmos a = new Algoritmos();
+               int est = a.idEst(estacion);
+               String finalCal="none"; 
+               
+               ArrayList tiempos=new ArrayList<>();
+               
+               System.out.println("IDEST "+est);
+               try
+               {
+               tiempos = a.tiemposEstimados(est);
+               finalCal="";
+               
+                        for(int i=0;i<tiempos.size();i++)
+                            finalCal = finalCal+tiempos.get(i)+"#";
+
+                        if(!finalCal.equals(""))
+                            finalCal=finalCal.substring(0,finalCal.length()-1);
+
+                        System.out.println("Unidades: "+finalCal);
+                        conn.close();
+                }catch(Exception e)
+                {
+                    return "none";
+                }
+               return finalCal;
+                    
+            }
+         catch(Exception e){
+             System.out.println(e);
+             resM=-1;}
+
+            return "none";
+        }
+    
 }

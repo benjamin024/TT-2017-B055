@@ -30,25 +30,48 @@ public class Planificador {
         a.reduceGrafoATransbordos();
         //Se obtienen los caminos (hacer que el método regrese int[][]
         int[][] grafoCaminos = a.generaRutasTransbordos(estacion_inicial, estacion_final, operacion);
-        
+        int peso1=0,peso2=0;
         //Se ejecutan los algoritmos de optimizacion
-        Dijkstra dk = new Dijkstra();
-        int[] resDk = dk.dijkstra(grafoCaminos, estacion_inicial, estacion_final);
-        
+       // Dijkstra dk = new Dijkstra();
+      //  int[] resDk = dk.dijkstra(grafoCaminos, estacion_inicial, estacion_final);
+        /*
         PERT p = new PERT();
         int[] resP = p.metodoPERT(grafoCaminos,estacion_inicial,estacion_final);
         System.out.println();
         System.out.println("PERT "+resP.length);
         for(int i = 0;i<resP.length;i++)
-            System.out.print(" "+resP[i]);
+            System.out.print(" "+resP[i]);*/
         
         FloydWarshall fw = new FloydWarshall();
         int[] resFW = fw.FloydWarshall(grafoCaminos, estacion_inicial, estacion_final);
+        
+        peso1 = resFW[resFW.length-1];
+        
+        ArrayList<Integer> auxCaminoRuta = new ArrayList<>();
+        ArrayList<Integer> auxCaminoPeso = new ArrayList<>();
+        
+        for(int z=0;z<resFW.length-1;z++)
+            auxCaminoRuta.add(resFW[z]);
+        
+        if(operacion==1)
+            auxCaminoPeso = a.calculaPesos(auxCaminoRuta,estacion_inicial,estacion_final);
+        else
+            auxCaminoPeso = a.calculaPesos(auxCaminoRuta);
+        
+        for(int y=0;y<auxCaminoPeso.size();y++)
+            peso2 = peso2+auxCaminoPeso.get(y);
            
         ArrayList<Integer> resultados_algoritmos = new ArrayList<>();
-        resultados_algoritmos.add(resDk[resDk.length - 1]);
+        int[] camino = {};
+      //  resultados_algoritmos.add(resDk[resDk.length - 1]);
+     /* resultados_algoritmos.add(40);
         resultados_algoritmos.add(resP[resP.length - 1]);
         resultados_algoritmos.add(resFW[resFW.length - 1]);
+        
+        System.out.println("Resultados");
+        
+        for(int i=0;i<resultados_algoritmos.size();i++)
+            System.out.println(resultados_algoritmos.get(i));
         
         //Elegimos el resultado que más nos conviene dependiendo el resultado
         int valorMin = 999;
@@ -65,7 +88,7 @@ public class Planificador {
             int index = resultados_algoritmos.indexOf(valorMin);
             switch(index){
                 case 0:
-                    camino = resDk;
+               //     camino = resDk;
                     break;
                 case 1:
                     camino = resP;
@@ -82,7 +105,7 @@ public class Planificador {
                 int auxNumNod = 0;
                 switch(indices[i]){
                     case 0:
-                        auxNumNod = resDk.length - 1;
+                  //      auxNumNod = resDk.length - 1;
                         break;
                     case 1:
                         auxNumNod = resP.length - 1;
@@ -98,7 +121,7 @@ public class Planificador {
             }
             switch(auxIndex){
                 case 0:
-                    camino = resDk;
+                //    camino = resDk;
                     break;
                 case 1:
                     camino = resP;
@@ -107,7 +130,9 @@ public class Planificador {
                     camino = resFW;
                     break;
             }
-        }
+        }*/
+        
+        camino = resFW;
         
         System.out.println("\n\nCAMINO");
         for(int i = 0; i < camino.length; i++){
@@ -116,7 +141,31 @@ public class Planificador {
         System.out.println("\n\n");
         //Expandemos grafo
         int[] grafoResultado = a.generaViajeCompleto(estacion_inicial, estacion_final, camino);
-        return grafoResultado;
+        int posAux = grafoResultado.length;
+        int [] grafoRes = new int[posAux+2];
+        //grafoResultado[posAux] =peso1;
+        //grafoResultado[posAux+1] =peso2;
+        for(int i = 0; i < grafoResultado.length; i++){
+            grafoRes[i]=grafoResultado[i];
+        }
+        
+        if(operacion==0)
+        {
+            grafoRes[posAux]=peso1;
+            grafoRes[posAux+1]=peso2;
+        }
+        else
+        {
+            grafoRes[posAux]=peso2;
+            grafoRes[posAux+1]=peso1;
+        }
+            
+        
+        System.out.println("\n\nCAMINO PESOS");
+        for(int i = 0; i < grafoRes.length; i++){
+            System.out.print(grafoRes[i] + " ");
+        }
+        return grafoRes;
     }
     
     public int planificadorAdministrador(int operacion, int ruta) throws Exception{
@@ -130,7 +179,7 @@ public class Planificador {
     
     public static void main(String[] args) throws Exception {
         Planificador p = new Planificador();
-        int[] resultado = p.planificadorUsuarios(0, 51, 92);
+        int[] resultado = p.planificadorUsuarios(1, 51, 92);
         System.out.println("");
         System.out.println("");
         for(int i = 0; i < resultado.length; i++){
